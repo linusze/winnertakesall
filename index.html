@@ -312,6 +312,40 @@
     line-height: 1.55;
   }
 
+  /* ── Tables ── */
+  .data-table-wrap { overflow-x: auto; margin-top: 1.25rem; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .93rem;
+  }
+  .data-table caption {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--header-bg);
+    margin-bottom: .6rem;
+    text-align: left;
+    caption-side: top;
+  }
+  .data-table th {
+    border-top: 2px solid var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    padding: .55rem .85rem;
+    font-weight: 700;
+    text-align: right;
+    color: var(--header-bg);
+    white-space: nowrap;
+  }
+  .data-table th:first-child { text-align: left; }
+  .data-table td {
+    padding: .5rem .85rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td:first-child { text-align: left; }
+  .data-table tbody tr:last-child td { border-bottom: 2px solid var(--header-bg); }
+  .data-table tbody tr:hover td { background: #f3f5f8; }
+
   /* ── Online Appendix content ── */
   .appendix-section { margin-bottom: 2.25rem; }
   .appendix-body {
@@ -366,32 +400,28 @@
     position: relative;
   }
   .pres-slide {
-    height: 100%;
+    min-height: 100%;
     scroll-snap-align: start;
     display: flex;
-    align-items: stretch;
     justify-content: center;
     background: var(--bg);
-    overflow: hidden;
+    padding: 1.5rem 0 2.5rem;
   }
   .pres-slide-inner {
     width: 100%;
     max-width: 960px;
-    padding: 1.1rem 2rem .9rem;
+    padding: 0 2rem;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
   .pres-fig-title {
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--header-bg);
     margin-bottom: .45rem;
-    flex-shrink: 0;
   }
   .pres-chart-wrap {
-    flex: 1;
-    min-height: 0;
+    height: 480px;
     background: var(--card-bg);
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0,0,0,.08);
@@ -404,7 +434,6 @@
     font-size: .8rem;
     color: #888;
     margin-top: .3rem;
-    flex-shrink: 0;
   }
   .pres-note {
     background: var(--card-bg);
@@ -415,7 +444,6 @@
     color: var(--text-light);
     line-height: 1.5;
     margin-top: .35rem;
-    flex-shrink: 0;
   }
 
   /* Presentation sidebar */
@@ -573,9 +601,46 @@
     </div>
   </div>
 
-  <!-- ──── Tables Tab (placeholder) ──── -->
+  <!-- ──── Tables Tab ──── -->
   <div id="tables" class="tab-panel">
-    <div class="placeholder-message">Tables coming soon.</div>
+    <div class="section-heading">Table 1</div>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <caption>Average Profitability Growth by Tier, 2001&ndash;2024</caption>
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>2001</th>
+            <th>2024</th>
+            <th>Total Growth</th>
+            <th>CAGR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Next 9% (P90&ndash;P99)</td>
+            <td>$0.4B</td>
+            <td>$1.6B</td>
+            <td>+300%</td>
+            <td>6.2%</td>
+          </tr>
+          <tr>
+            <td>Top 1% (P99&ndash;100)</td>
+            <td>$5.4B</td>
+            <td>$30.0B</td>
+            <td>+456%</td>
+            <td>7.7%</td>
+          </tr>
+          <tr>
+            <td>Top 0.1% (P99.9&ndash;100)</td>
+            <td>$18.6B</td>
+            <td>$140.0B</td>
+            <td>+653%</td>
+            <td>9.2%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- ──── Presentation Tab ──── -->
@@ -804,12 +869,14 @@ function toEquidistant(pPct) {
 }
 
 // ── Tax categories ──
+// Order is bottom-to-top in the tooltip (Plotly unified hover reverses array order,
+// so putting PIT first means CIT ends up first in the tooltip, matching the legend).
 const TAX_VARS = [
-  { key: 'sh_tax_cit',         label: 'Corporate income tax',    color: '#E69F00' },
-  { key: 'sh_tax_ind',         label: 'Indirect taxes',          color: '#56B4E9' },
-  { key: 'sh_tax_dir_wea',     label: 'Property and wealth tax', color: '#009E73' },
+  { key: 'sh_tax_dir_pit',     label: 'Personal income tax',     color: '#0072B2' },
   { key: 'sh_tax_soc_tot_soc', label: 'Social contributions',    color: '#F0E442' },
-  { key: 'sh_tax_dir_pit',     label: 'Personal income tax',     color: '#0072B2' }
+  { key: 'sh_tax_dir_wea',     label: 'Property and wealth tax', color: '#009E73' },
+  { key: 'sh_tax_ind',         label: 'Indirect taxes',          color: '#56B4E9' },
+  { key: 'sh_tax_cit',         label: 'Corporate income tax',    color: '#E69F00' }
 ];
 
 // ── Data cache (populated by fetch on page load) ──
@@ -944,7 +1011,7 @@ function buildChart(figId, targetId) {
       x: 0, y: 1.15,
       xanchor: 'left',
       font: { size: 11 },
-      traceorder: 'normal'
+      traceorder: 'reversed'
     },
     hovermode: 'x unified',
     plot_bgcolor: '#fff',
