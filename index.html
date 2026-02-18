@@ -188,99 +188,7 @@
     margin-top: .2rem;
   }
 
-  /* ── Figures gallery ── */
-  .fig-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-  .fig-tile {
-    background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
-    position: relative;
-  }
-  .fig-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 14px rgba(0,0,0,.14);
-  }
-  .fig-tile-thumb {
-    width: 100%;
-    aspect-ratio: 4/3;
-    background: #eef1f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .fig-tile-thumb canvas { width: 100%; height: 100%; object-fit: cover; }
-  .fig-tile-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    aspect-ratio: 4/3;
-    background: rgba(26,26,46,.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity .2s;
-  }
-  .fig-tile:hover .fig-tile-overlay { opacity: 1; }
-  .fig-tile-overlay span { color: #fff; font-size: 1.1rem; font-weight: 700; }
-  .fig-tile-label {
-    padding: .6rem .75rem;
-    font-size: .85rem;
-    font-weight: 600;
-    color: var(--text);
-    text-align: center;
-  }
-
-  /* ── Figure detail view ── */
-  .fig-detail { display: none; }
-  .fig-detail.active { display: block; }
-  .fig-detail-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: .75rem;
-    flex-wrap: wrap;
-    gap: .5rem;
-  }
-  .fig-detail-header .fig-title { margin-bottom: 0; }
-  .fig-detail-actions { display: flex; gap: .5rem; align-items: center; }
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: .85rem;
-    padding: .4rem .9rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background .15s;
-  }
-  .back-btn:hover { background: #eef1f5; }
-  .get-data-btn {
-    display: inline-block;
-    background: #e94560;
-    color: #fff;
-    text-decoration: none;
-    font-size: .85rem;
-    font-weight: 600;
-    padding: .4rem 1rem;
-    border-radius: 5px;
-    transition: background .2s;
-    white-space: nowrap;
-  }
-  .get-data-btn:hover { background: #d63350; }
-
-  /* ── Chart elements ── */
+  /* ── Chart elements (used in non-scroll contexts) ── */
   .chart-container {
     background: var(--card-bg);
     border-radius: 8px;
@@ -382,24 +290,24 @@
     font-size: 1.05rem;
   }
 
-  /* ── Presentation mode ── */
-  body.pres-mode { overflow: hidden; }
-  body.pres-mode main { padding: 0; max-width: 100%; width: 100%; margin: 0; }
-  body.pres-mode footer { display: none; }
+  /* ── Figures scroll mode ── */
+  body.figs-mode { overflow: hidden; }
+  body.figs-mode main { padding: 0; max-width: 100%; width: 100%; margin: 0; }
+  body.figs-mode footer { display: none; }
 
-  #presentation.tab-panel.active {
+  #figures.tab-panel.active {
     height: calc(100vh - var(--header-h, 100px));
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
-  #pres-container {
+  #figs-container {
     flex: 1;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     position: relative;
   }
-  .pres-slide {
+  .figs-slide {
     min-height: 100%;
     scroll-snap-align: start;
     display: flex;
@@ -407,20 +315,20 @@
     background: var(--bg);
     padding: 1.5rem 0 2.5rem;
   }
-  .pres-slide-inner {
+  .figs-slide-inner {
     width: 100%;
     max-width: 960px;
     padding: 0 2rem;
     display: flex;
     flex-direction: column;
   }
-  .pres-fig-title {
+  .figs-fig-title {
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--header-bg);
     margin-bottom: .45rem;
   }
-  .pres-chart-wrap {
+  .figs-chart-wrap {
     height: 480px;
     background: var(--card-bg);
     border-radius: 8px;
@@ -428,14 +336,14 @@
     padding: 1rem;
     overflow: hidden;
   }
-  .pres-chart-wrap .plotly-chart { height: 100%; }
-  .pres-source {
+  .figs-chart-wrap .plotly-chart { height: 100%; }
+  .figs-source {
     text-align: right;
     font-size: .8rem;
     color: #888;
     margin-top: .3rem;
   }
-  .pres-note {
+  .figs-note {
     background: var(--card-bg);
     border-left: 4px solid var(--tab-active);
     border-radius: 4px;
@@ -446,8 +354,8 @@
     margin-top: .35rem;
   }
 
-  /* Presentation sidebar */
-  #pres-sidebar {
+  /* Figures sidebar */
+  #figs-sidebar {
     position: fixed;
     right: 1.75rem;
     top: 50%;
@@ -458,7 +366,7 @@
     gap: 1.1rem;
     z-index: 200;
   }
-  .pres-nav-item {
+  .figs-nav-item {
     display: flex;
     align-items: center;
     gap: .55rem;
@@ -467,14 +375,14 @@
     transition: opacity .25s;
     user-select: none;
   }
-  .pres-nav-item.active { opacity: 1; }
-  .pres-nav-label {
+  .figs-nav-item.active { opacity: 1; }
+  .figs-nav-label {
     font-size: .82rem;
     font-weight: 600;
     color: var(--header-bg);
     white-space: nowrap;
   }
-  .pres-dot {
+  .figs-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -482,7 +390,7 @@
     transition: background .25s, transform .25s;
     flex-shrink: 0;
   }
-  .pres-nav-item.active .pres-dot {
+  .figs-nav-item.active .figs-dot {
     background: var(--tab-active);
     transform: scale(1.35);
   }
@@ -530,7 +438,7 @@
   <div id="home" class="tab-panel active">
     <h2 class="paper-title">Winner-Takes-All: Corporate Tax Avoidance and Wealth Concentration in the United States</h2>
 
-    <div class="home-authors">Aidan Regan, Oscar Barrera Rodriguez, Linus Zechlin &amp; Rafael Quintero God&iacute;nez</div>
+    <div class="home-authors">Aidan Regan, Oscar Barrera Rodriguez, Rafael Quintero God&iacute;nez &amp; Linus Zechlin</div>
 
     <div class="paper-link"><a href="#">Read the full paper here</a></div>
 
@@ -550,55 +458,69 @@
 
   <!-- ──── Figures Tab ──── -->
   <div id="figures" class="tab-panel">
-    <!-- Gallery view -->
-    <div id="figures-gallery" class="fig-gallery">
-      <div class="fig-tile" data-figure="fig1a">
-        <div class="fig-tile-thumb"><canvas id="fig1a-thumb"></canvas></div>
-        <div class="fig-tile-overlay"><span>Fig. 1a</span></div>
-        <div class="fig-tile-label">Fig. 1a</div>
+
+    <!-- Sidebar navigator -->
+    <div id="figs-sidebar">
+      <div class="figs-nav-item active" data-slide-target="0">
+        <span class="figs-nav-label">Fig. 1a</span>
+        <div class="figs-dot"></div>
       </div>
-      <div class="fig-tile" data-figure="fig1b">
-        <div class="fig-tile-thumb"><canvas id="fig1b-thumb"></canvas></div>
-        <div class="fig-tile-overlay"><span>Fig. 1b</span></div>
-        <div class="fig-tile-label">Fig. 1b</div>
+      <div class="figs-nav-item" data-slide-target="1">
+        <span class="figs-nav-label">Fig. 2a</span>
+        <div class="figs-dot"></div>
+      </div>
+      <div class="figs-nav-item" data-slide-target="2">
+        <span class="figs-nav-label">Fig. 2b</span>
+        <div class="figs-dot"></div>
       </div>
     </div>
 
-    <!-- Detail: Fig 1a -->
-    <div id="detail-fig1a" class="fig-detail">
-      <div class="fig-detail-header">
-        <div class="fig-title">Fig. 1a Tax Incidence Composition, U.S. 1980</div>
-        <div class="fig-detail-actions">
-          <a href="https://democracychallenged.com/" target="_blank" class="get-data-btn">Get the data.</a>
-          <button class="back-btn" onclick="closeFigDetail()">&larr; Back</button>
-        </div>
-      </div>
-      <div class="chart-container">
-        <div id="fig1a-chart" class="plotly-chart"></div>
-      </div>
-      <div class="chart-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
-      <div class="chart-note">
-        <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph shows that in 1980, the corporate income tax (CIT) played an anchor role in maintaining progressivity at the top: the top 0.001% paid approximately 56% of their income in total taxes, with CIT contributing about 20 percentage points.
-      </div>
-    </div>
+    <!-- Full-page scroll container -->
+    <div id="figs-container">
 
-    <!-- Detail: Fig 1b -->
-    <div id="detail-fig1b" class="fig-detail">
-      <div class="fig-detail-header">
-        <div class="fig-title">Fig. 1b Tax Incidence Composition, U.S. 2023</div>
-        <div class="fig-detail-actions">
-          <a href="https://democracychallenged.com/" target="_blank" class="get-data-btn">Get the data.</a>
-          <button class="back-btn" onclick="closeFigDetail()">&larr; Back</button>
+      <!-- Slide 0 — Figure 1a: Average wealth top 0.001% -->
+      <div class="figs-slide" id="figs-slide-0">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 1a &nbsp;Average wealth, top 0.001% (approx. 2,600 adults)</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig1a-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: WID.world</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Values in 2024/2025 USD. Trend reflects knowledge sector dominance. Accelerated mid-1990s (tech rise), peaked 2000 (dot-com), surged to 2008 crisis, then intensified: 2021 peak ($3.2B avg). 2001&ndash;2023: +1,841% (+7.1%/yr). Post-2019 acceleration reflects TCJA (2017): CIT 35% &rarr; 21% (2018). Immediate profit boost, but wealth impact visible 2019+ via buybacks, dividends, share prices disproportionately benefiting top wealth holders. Author&rsquo;s calculations.
+          </div>
         </div>
       </div>
-      <div class="chart-container">
-        <div id="fig1b-chart" class="plotly-chart"></div>
+
+      <!-- Slide 1 — Figure 2a: Tax incidence 1980 -->
+      <div class="figs-slide" id="figs-slide-1">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 2a &nbsp;Tax Incidence Composition, U.S. 1980</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig2a-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph shows that in 1980, the corporate income tax (CIT) played an anchor role in maintaining progressivity at the top: the top 0.001% paid approximately 56% of their income in total taxes, with CIT contributing about 20 percentage points.
+          </div>
+        </div>
       </div>
-      <div class="chart-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
-      <div class="chart-note">
-        <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph reveals a striking transformation by 2023: total tax incidence now exhibits an inverted U-shape, with both the poor and ultra-rich paying proportionally less than the upper-middle class. The top 0.001% now pay approximately 30% in total taxes, with CIT contributing less than 5 percentage points.
+
+      <!-- Slide 2 — Figure 2b: Tax incidence 2023 -->
+      <div class="figs-slide" id="figs-slide-2">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 2b &nbsp;Tax Incidence Composition, U.S. 2023</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig2b-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph reveals a striking transformation by 2023: total tax incidence now exhibits an inverted U-shape, with both the poor and ultra-rich paying proportionally less than the upper-middle class. The top 0.001% now pay approximately 30% in total taxes, with CIT contributing less than 5 percentage points.
+          </div>
+        </div>
       </div>
-    </div>
+
+    </div><!-- /figs-container -->
   </div>
 
   <!-- ──── Tables Tab ──── -->
@@ -645,51 +567,7 @@
 
   <!-- ──── Presentation Tab ──── -->
   <div id="presentation" class="tab-panel">
-
-    <!-- Sidebar navigator -->
-    <div id="pres-sidebar">
-      <div class="pres-nav-item active" data-slide-target="0">
-        <span class="pres-nav-label">Fig. 1a</span>
-        <div class="pres-dot"></div>
-      </div>
-      <div class="pres-nav-item" data-slide-target="1">
-        <span class="pres-nav-label">Fig. 1b</span>
-        <div class="pres-dot"></div>
-      </div>
-    </div>
-
-    <!-- Full-page scroll container -->
-    <div id="pres-container">
-
-      <!-- Slide 0 — Fig. 1a -->
-      <div class="pres-slide" id="pres-slide-0">
-        <div class="pres-slide-inner">
-          <div class="pres-fig-title">Fig. 1a &nbsp;Tax Incidence Composition, U.S. 1980</div>
-          <div class="pres-chart-wrap">
-            <div id="pres-fig1a-chart" class="plotly-chart"></div>
-          </div>
-          <div class="pres-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
-          <div class="pres-note">
-            <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph shows that in 1980, the corporate income tax (CIT) played an anchor role in maintaining progressivity at the top: the top 0.001% paid approximately 56% of their income in total taxes, with CIT contributing about 20 percentage points.
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 1 — Fig. 1b -->
-      <div class="pres-slide" id="pres-slide-1">
-        <div class="pres-slide-inner">
-          <div class="pres-fig-title">Fig. 1b &nbsp;Tax Incidence Composition, U.S. 2023</div>
-          <div class="pres-chart-wrap">
-            <div id="pres-fig1b-chart" class="plotly-chart"></div>
-          </div>
-          <div class="pres-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
-          <div class="pres-note">
-            <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph reveals a striking transformation by 2023: total tax incidence now exhibits an inverted U-shape, with both the poor and ultra-rich paying proportionally less than the upper-middle class. The top 0.001% now pay approximately 30% in total taxes, with CIT contributing less than 5 percentage points.
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /pres-container -->
+    <div class="placeholder-message">Presentation mode coming soon.</div>
   </div>
 
   <!-- ──── Online Appendix Tab ──── -->
@@ -779,18 +657,18 @@
       </div>
 
       <div class="author-card">
-        <img src="https://raw.githubusercontent.com/linusze/winnertakesall/main/pictures/linus.png"
-             alt="Linus Zechlin" class="author-photo">
-        <div class="author-name">Linus Zechlin</div>
-        <div class="author-email">linus.zechlin@ucdconnect.ie</div>
-        <div class="author-bio">Short bio about the author.</div>
-      </div>
-
-      <div class="author-card">
         <img src="https://raw.githubusercontent.com/linusze/winnertakesall/main/pictures/rafael.png"
              alt="Rafael Quintero God&#237;nez" class="author-photo">
         <div class="author-name">Rafael Quintero God&#237;nez</div>
         <div class="author-email">rafael.quinterogodinez@ucd.ie</div>
+        <div class="author-bio">Short bio about the author.</div>
+      </div>
+
+      <div class="author-card">
+        <img src="https://raw.githubusercontent.com/linusze/winnertakesall/main/pictures/linus.png"
+             alt="Linus Zechlin" class="author-photo">
+        <div class="author-name">Linus Zechlin</div>
+        <div class="author-email">linus.zechlin@ucdconnect.ie</div>
         <div class="author-bio">Short bio about the author.</div>
       </div>
 
@@ -816,32 +694,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById(btn.dataset.tab).classList.add('active');
 
     if (btn.dataset.tab === 'figures') {
-      closeFigDetail();
-      renderThumbnails();
-    }
-    if (btn.dataset.tab === 'presentation') {
-      activatePresentation();
-    } else if (prevTab === 'presentation') {
-      deactivatePresentation();
+      activateFigures();
+    } else if (prevTab === 'figures') {
+      deactivateFigures();
     }
   });
 });
-
-// ── Figure tile click → detail view ──
-document.querySelectorAll('.fig-tile').forEach(tile => {
-  tile.addEventListener('click', () => {
-    const figId = tile.dataset.figure;
-    document.getElementById('figures-gallery').style.display = 'none';
-    document.getElementById('detail-' + figId).classList.add('active');
-    if (figId === 'fig1a' && !window._fig1aRendered) buildChart('fig1a');
-    if (figId === 'fig1b' && !window._fig1bRendered) buildChart('fig1b');
-  });
-});
-
-function closeFigDetail() {
-  document.querySelectorAll('.fig-detail').forEach(d => d.classList.remove('active'));
-  document.getElementById('figures-gallery').style.display = '';
-}
 
 // ── Parse CSV ──
 function parseCSV(csv) {
@@ -879,9 +737,10 @@ const TAX_VARS = [
   { key: 'sh_tax_cit',         label: 'Corporate income tax',    color: '#E69F00' }
 ];
 
-// ── Data cache (populated by fetch on page load) ──
+// ── Data cache ──
 const _cache = {};
 
+// ── Process stacked-area CSV (fig2a, fig2b) ──
 function processCSV(figId, csvText) {
   const rows     = parseCSV(csvText);
   const filtered = rows.filter(r => +r.p >= 10000);
@@ -890,22 +749,36 @@ function processCSV(figId, csvText) {
   _cache[figId]  = { filtered, xVals, stacked };
 }
 
+// ── Process top-0.001% wealth CSV (fig1a) ──
+function processTop001CSV(csvText) {
+  const rows = parseCSV(csvText);
+  // Locate the value column regardless of case (e.g. valuep99_999p100_USD23)
+  const colKey = Object.keys(rows[0]).find(k => k.toLowerCase().startsWith('valuep99_999'));
+  const validRows = rows.filter(r => r.year && +r.year > 0 && r[colKey]);
+  const years  = validRows.map(r => +r.year);
+  const values = validRows.map(r => +r[colKey] / 1e9);
+  _cache['fig1a'] = { years, values };
+}
+
 function getData(figId) {
   return _cache[figId];
 }
 
-// ── Fetch both CSVs from GitHub on page load ──
+// ── Fetch all CSVs on page load ──
 const DATA_URLS = {
-  fig1a: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
-  fig1b: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv'
+  fig1a: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/top001data.csv',
+  fig2a: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
+  fig2b: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv'
 };
 
 Promise.all([
   fetch(DATA_URLS.fig1a).then(r => { if (!r.ok) throw new Error('fig1a fetch failed'); return r.text(); }),
-  fetch(DATA_URLS.fig1b).then(r => { if (!r.ok) throw new Error('fig1b fetch failed'); return r.text(); })
-]).then(([csv1a, csv1b]) => {
-  processCSV('fig1a', csv1a);
-  processCSV('fig1b', csv1b);
+  fetch(DATA_URLS.fig2a).then(r => { if (!r.ok) throw new Error('fig2a fetch failed'); return r.text(); }),
+  fetch(DATA_URLS.fig2b).then(r => { if (!r.ok) throw new Error('fig2b fetch failed'); return r.text(); })
+]).then(([csv1a, csv2a, csv2b]) => {
+  processTop001CSV(csv1a);
+  processCSV('fig2a', csv2a);
+  processCSV('fig2b', csv2b);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -913,56 +786,62 @@ Promise.all([
     + 'Failed to load data.<br>Please check your connection and refresh the page.</p>';
 });
 
-// ── Render thumbnail on canvas ──
-function renderThumb(canvasId, figId) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas || canvas.dataset.drawn) return;
-  const data = getData(figId);
+// ── Build line chart (Figure 1a: average wealth top 0.001%) ──
+function buildLineChart(targetId) {
+  const data = getData('fig1a');
   if (!data) return;
-  canvas.dataset.drawn = '1';
-  const { xVals, stacked } = data;
-  const dpr  = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width  = rect.width  * dpr;
-  canvas.height = rect.height * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  const w = rect.width, h = rect.height;
-  const pad = { l: 4, r: 4, t: 4, b: 4 };
-  const pw = w - pad.l - pad.r, ph = h - pad.t - pad.b;
-  const xMin = Math.min(...xVals), xMax = Math.max(...xVals);
-  const cumStacks = [];
-  for (let s = 0; s < TAX_VARS.length; s++) {
-    cumStacks[s] = stacked[s].map((v, i) => {
-      let sum = 0;
-      for (let k = 0; k <= s; k++) sum += stacked[k][i];
-      return sum;
-    });
-  }
-  const yMax = Math.max(...cumStacks[TAX_VARS.length - 1]) * 1.05;
-  const tx = x => pad.l + (x - xMin) / (xMax - xMin) * pw;
-  const ty = y => pad.t + ph - (y / yMax) * ph;
-  for (let s = TAX_VARS.length - 1; s >= 0; s--) {
-    ctx.beginPath();
-    ctx.moveTo(tx(xVals[0]), ty(0));
-    for (let i = 0; i < xVals.length; i++) ctx.lineTo(tx(xVals[i]), ty(cumStacks[s][i]));
-    ctx.lineTo(tx(xVals[xVals.length - 1]), ty(0));
-    ctx.closePath();
-    ctx.fillStyle = TAX_VARS[s].color;
-    ctx.fill();
-  }
+  const { years, values } = data;
+
+  const trace = {
+    x: years,
+    y: values,
+    type: 'scatter',
+    mode: 'lines+markers',
+    line: { color: '#0072B2', width: 2 },
+    marker: { color: '#0072B2', size: 5 },
+    hovertemplate: '<b>%{x}</b><br>$%{y:.2f}B<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tickfont: { size: 10 },
+      tick0: 2001,
+      dtick: 5,
+      showgrid: false,
+      zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Average Wealth, Top 0.001% (billions, USD 2024)', font: { size: 12 } },
+      tickprefix: '$',
+      ticksuffix: 'B',
+      tickformat: '.1f',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 90, r: 20, t: 20, b: 50 },
+    hovermode: 'x unified',
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: [
+      'zoom2d', 'pan2d', 'zoomIn2d', 'zoomOut2d',
+      'autoScale2d', 'resetScale2d', 'lasso2d', 'select2d'
+    ],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [trace], layout, config);
 }
 
-function renderThumbnails() {
-  renderThumb('fig1a-thumb', 'fig1a');
-  renderThumb('fig1b-thumb', 'fig1b');
-}
-
-// ── Build interactive Plotly chart ──
-// targetId: optional override for the container element id
+// ── Build interactive Plotly stacked area chart (Figure 2a / 2b) ──
 function buildChart(figId, targetId) {
   const chartId = targetId || (figId + '-chart');
-  if (!targetId) window['_' + figId + 'Rendered'] = true;
   const { filtered, xVals } = getData(figId);
 
   const pLabels = filtered.map(r => {
@@ -1033,39 +912,40 @@ function buildChart(figId, targetId) {
   Plotly.newPlot(chartId, traces, layout, config);
 }
 
-// ── Presentation: per-chart render flags & observer state ──
-const _presRendered = {};
-let _presObserverInit = false;
+// ── Figures scroll mode ──
+const _figsRendered = {};
+let _figsObserverInit = false;
 
-function buildPresChart(figId) {
-  if (_presRendered[figId]) return;
-  _presRendered[figId] = true;
+function buildFigsChart(slideIdx) {
+  if (_figsRendered[slideIdx]) return;
+  _figsRendered[slideIdx] = true;
   // Double rAF ensures layout is committed before Plotly measures the container
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    buildChart(figId, 'pres-' + figId + '-chart');
+    if (slideIdx === 0) buildLineChart('figs-fig1a-chart');
+    if (slideIdx === 1) buildChart('fig2a', 'figs-fig2a-chart');
+    if (slideIdx === 2) buildChart('fig2b', 'figs-fig2b-chart');
   }));
 }
 
-function setupPresObserver() {
-  if (_presObserverInit) return;
-  _presObserverInit = true;
+function setupFigsObserver() {
+  if (_figsObserverInit) return;
+  _figsObserverInit = true;
 
-  const container = document.getElementById('pres-container');
-  const navItems  = document.querySelectorAll('.pres-nav-item');
+  const container = document.getElementById('figs-container');
+  const navItems  = document.querySelectorAll('.figs-nav-item');
 
   const io = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const idx   = +entry.target.dataset.slideIdx;
-        const figId = idx === 0 ? 'fig1a' : 'fig1b';
+        const idx = +entry.target.dataset.slideIdx;
         navItems.forEach(n => n.classList.remove('active'));
         navItems[idx].classList.add('active');
-        buildPresChart(figId);
+        buildFigsChart(idx);
       }
     });
   }, { root: container, threshold: 0.5 });
 
-  document.querySelectorAll('.pres-slide').forEach((slide, i) => {
+  document.querySelectorAll('.figs-slide').forEach((slide, i) => {
     slide.dataset.slideIdx = i;
     io.observe(slide);
   });
@@ -1079,16 +959,16 @@ function setupPresObserver() {
   });
 }
 
-function activatePresentation() {
+function activateFigures() {
   const headerH = document.querySelector('header').offsetHeight;
   document.documentElement.style.setProperty('--header-h', headerH + 'px');
-  document.body.classList.add('pres-mode');
-  buildPresChart('fig1a');
-  setupPresObserver();
+  document.body.classList.add('figs-mode');
+  buildFigsChart(0);
+  setupFigsObserver();
 }
 
-function deactivatePresentation() {
-  document.body.classList.remove('pres-mode');
+function deactivateFigures() {
+  document.body.classList.remove('figs-mode');
 }
 </script>
 </body>
