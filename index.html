@@ -312,6 +312,34 @@
     line-height: 1.55;
   }
 
+  /* ── Online Appendix content ── */
+  .appendix-section { margin-bottom: 2.25rem; }
+  .appendix-body {
+    font-size: .97rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .appendix-list {
+    margin: .65rem 0 1rem 1.5rem;
+    font-size: .95rem;
+    color: var(--text);
+  }
+  .appendix-list li { margin-bottom: .55rem; line-height: 1.65; }
+  .appendix-placeholder {
+    background: var(--card-bg);
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    font-size: .9rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin: .75rem 0 1.5rem;
+  }
+
   /* ── Placeholder tabs ── */
   .placeholder-message {
     text-align: center;
@@ -599,9 +627,69 @@
     </div><!-- /pres-container -->
   </div>
 
-  <!-- ──── Online Appendix Tab (placeholder) ──── -->
+  <!-- ──── Online Appendix Tab ──── -->
   <div id="appendix" class="tab-panel">
-    <div class="placeholder-message">Online Appendix coming soon.</div>
+
+    <!-- A1: r > g -->
+    <div class="appendix-section">
+      <div class="section-heading"><em>r</em> &gt; <em>g</em>: When Profits Grow Faster Than the Economy</div>
+      <p class="appendix-body">
+        The figures in this appendix present implied returns on assets (<em>r</em>) for the most profitable U.S. corporate groups alongside real GDP growth (<em>g</em>) over the 2001&ndash;2024 period. These estimates are derived from our Orbis Historical panel by computing after-tax profit as a share of total assets for corporations at different points in the profitability distribution.
+      </p>
+      <p class="appendix-body">
+        The results show that the top corporate groups earn returns that consistently exceed GDP growth by a factor of 3&ndash;5&times;, consistent with Piketty&rsquo;s <em>r</em> &gt; <em>g</em> framework and with the scale-dependent returns documented by (Saez et al., 2023). Knowledge-sector corporate groups show the highest returns, with implied <em>r</em> of approximately 10&ndash;15 percent compared to real GDP growth of 2&ndash;3 percent. The tax channel documented in the main text amplifies this divergence: by lowering the effective tax rate on the highest-returning assets, corporate tax erosion widens the gap between <em>r</em> and <em>g</em> for precisely the corporations and shareholders where wealth concentration is most extreme.
+      </p>
+      <div class="appendix-placeholder">Figure A1: After-Tax Implied <em>r</em> vs. <em>g</em>, All Sectors, 2001&ndash;2024</div>
+      <div class="appendix-placeholder">Figure A2: Knowledge Sector <em>r</em> vs. <em>g</em>, 2001&ndash;2024</div>
+      <div class="appendix-placeholder">Figure A3: Benchmarking Superstar <em>r</em> Against Existing Estimates</div>
+    </div>
+
+    <!-- A2: Descriptive Statistics -->
+    <div class="appendix-section">
+      <div class="section-heading">Descriptive Statistics</div>
+      <div class="appendix-placeholder">Table A1: Summary Statistics of U.S. Corporations, 2001&ndash;2024 (millions, 2024 USD)</div>
+    </div>
+
+    <!-- A3: Sectoral Classification -->
+    <div class="appendix-section">
+      <div class="section-heading">Sectoral Classification</div>
+      <div class="appendix-placeholder">Table A2: Classification of Sectors by NACE Rev. 2 Codes</div>
+    </div>
+
+    <!-- A4: TCJA -->
+    <div class="appendix-section">
+      <div class="section-heading">The 2017 Tax Cuts and Jobs Act: Key Provisions</div>
+      <p class="appendix-body">
+        The Tax Cuts and Jobs Act, enacted in December 2017, introduced several major reforms to the U.S. corporate tax system:
+      </p>
+      <ul class="appendix-list">
+        <li><strong>Statutory rate cut:</strong> The federal corporate income tax rate was reduced from 35 percent to 21 percent, effective from 2018.</li>
+        <li><strong>Territorial system:</strong> The United States moved from a worldwide system (taxing global income with foreign tax credits) to a partially territorial system, with a participation exemption for certain foreign-source dividends.</li>
+        <li><strong>GILTI (Global Intangible Low-Taxed Income):</strong> A minimum tax on certain foreign earnings designed to limit the benefits of holding IP in low-tax jurisdictions.</li>
+        <li><strong>FDII (Foreign-Derived Intangible Income):</strong> A preferential deduction for income derived from serving foreign markets using U.S.-based IP, effectively reducing the tax rate on qualifying income to approximately 13.1 percent.</li>
+        <li><strong>BEAT (Base Erosion and Anti-Abuse Tax):</strong> A minimum tax targeting deductible payments made by U.S. corporations to foreign related parties.</li>
+        <li><strong>Bonus depreciation:</strong> Near-full expensing of many tangible investments (100 percent bonus depreciation), phasing down after 2022.</li>
+        <li><strong>Transition tax (Section 965):</strong> A one-off deemed repatriation of accumulated foreign earnings, generating large one-time tax charges in 2017&ndash;2018 financial statements.</li>
+      </ul>
+    </div>
+
+    <!-- A5: Section 174 -->
+    <div class="appendix-section">
+      <div class="section-heading">Section 174 R&amp;D Capitalisation (2022)</div>
+      <p class="appendix-body">
+        Beginning on 1 January 2022, U.S. corporations were required to capitalise and amortise research and development expenditures rather than deducting them immediately:
+      </p>
+      <ul class="appendix-list">
+        <li><strong>Before 2022:</strong> Corporations could deduct all R&amp;D spending immediately, reducing taxable income in the year the expenditure was incurred.</li>
+        <li><strong>From 2022:</strong> R&amp;D costs must be amortised over 5 years for research conducted in the United States and 15 years for research conducted abroad.</li>
+        <li><strong>Immediate effect:</strong> In 2022, R&amp;D-intensive corporations lost approximately 80&ndash;90 percent of the annual tax benefit they had previously received from immediate expensing.</li>
+        <li><strong>Accounting treatment:</strong> Under applicable accounting standards, corporations were required to recognise most of this change in their 2022 financial statements, including adjustments to deferred tax assets. This produced a large, visible spike in effective tax rates and a corresponding decline in after-tax profits for R&amp;D-intensive corporate groups.</li>
+      </ul>
+      <p class="appendix-body">
+        The Section 174 change provides a natural experiment for our analysis. Because the shock was concentrated among knowledge-sector corporate groups with high R&amp;D expenditures, it allows us to observe what happens to profit concentration when the tax constraint on the most profitable corporations is temporarily tightened.
+      </p>
+    </div>
+
   </div>
 
   <!-- ──── Authors Tab ──── -->
