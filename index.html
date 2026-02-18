@@ -267,6 +267,35 @@
     padding-bottom: .25rem;
   }
   .data-table-colgroup th:first-child { text-align: left; border-bottom: none; }
+  /* Shade Turnover (cols 2-6) and Tax Expense (cols 12-16) in Table 2 */
+  .data-table--wide .data-table-colgroup th:nth-child(2),
+  .data-table--wide .data-table-colgroup th:nth-child(4) { background: #f0f2f5; }
+  .data-table--wide thead tr:last-child th:nth-child(n+2):nth-child(-n+6),
+  .data-table--wide thead tr:last-child th:nth-child(n+12) { background: #f0f2f5; }
+  .data-table--wide tbody td:nth-child(n+2):nth-child(-n+6),
+  .data-table--wide tbody td:nth-child(n+12) { background: #f0f2f5; }
+  .data-table--wide tbody tr:hover td:nth-child(n+2):nth-child(-n+6),
+  .data-table--wide tbody tr:hover td:nth-child(n+12) { background: #e5e8ec; }
+
+  /* Sector classification table (Table 3) */
+  .data-table--sectors { font-size: .9rem; }
+  .data-table--sectors th,
+  .data-table--sectors td { white-space: normal; }
+  .data-table--sectors th:first-child,
+  .data-table--sectors td:first-child { text-align: center; width: 4rem; white-space: nowrap; }
+  .data-table--sectors th:nth-child(2),
+  .data-table--sectors td:nth-child(2) { width: 11rem; font-weight: 600; white-space: nowrap; }
+  .sector-group-header td {
+    font-weight: 700;
+    font-style: italic;
+    padding-top: 1rem;
+    padding-bottom: .2rem;
+    border-bottom: none;
+    background: none;
+    color: var(--header-bg);
+  }
+  .sector-group-header:first-of-type td { padding-top: .35rem; }
+
   .table-note {
     font-size: .82rem;
     color: var(--text-light);
@@ -333,11 +362,17 @@
   }
   #figs-container {
     flex: 1;
-    overflow-y: scroll;
+    overflow: hidden;
     position: relative;
   }
+  #figs-slides-wrapper {
+    will-change: transform;
+    transition: transform 0.65s cubic-bezier(0.65, 0, 0.35, 1);
+  }
   .figs-slide {
-    min-height: 100%;
+    /* height set by JS to exactly match container */
+    overflow-y: auto;
+    overscroll-behavior: none;
     display: flex;
     justify-content: center;
     background: var(--bg);
@@ -505,6 +540,7 @@
 
     <!-- Full-page scroll container -->
     <div id="figs-container">
+    <div id="figs-slides-wrapper">
 
       <!-- Slide 0 — Figure 1a: Average wealth top 0.001% -->
       <div class="figs-slide" id="figs-slide-0">
@@ -548,6 +584,7 @@
         </div>
       </div>
 
+    </div><!-- /figs-slides-wrapper -->
     </div><!-- /figs-container -->
   </div>
 
@@ -637,6 +674,68 @@
         </tbody>
       </table>
       <p class="table-note"><em>Note:</em> All figures in millions of 2024 USD. Sample of 10,000 U.S. firms per year. Turnover = total operating revenues. Profit = net income after tax. Tax expense = current + deferred corporate income tax. Negative values indicate losses (profit) or net tax benefits from carryforwards/credits (tax). Notable patterns: (1) 2008&ndash;2009 shows financial crisis impact (profit decline, profit volatility spike); (2) Post-2018 shows TCJA effects (tax expense decline, increased volatility); (3) 2019&ndash;2021 extreme tax volatility reflects pandemic accounting adjustments and policy responses. Source: Orbis Historical. Author&rsquo;s calculations.</p>
+    </div>
+
+    <div class="table-section-heading">Table 3</div>
+    <div class="data-table-wrap">
+      <table class="data-table data-table--sectors">
+        <caption>Sectoral Classification Schema</caption>
+        <thead>
+          <tr>
+            <th>Sector</th>
+            <th>Label</th>
+            <th>Description &amp; Key NACE Rev.&nbsp;2 Codes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sector-group-header">
+            <td colspan="3"><em><strong>Knowledge Sector</strong></em></td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Tech</td>
+            <td>ICT manufacturing (26), telecommunications (61), IT services (62), data processing/hosting (63). Includes e-commerce platforms and digital content publishing. Tesla reclassified as Tech due to battery/software focus.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Pharma / Life Sciences</td>
+            <td>Pharmaceuticals (21), wholesale of pharmaceutical goods (4646), biotechnology R&amp;D (7211).</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Other Knowledge-Intensive</td>
+            <td>Publishing &amp; media (58&ndash;60), legal/accounting (69), management consulting (70), architecture/engineering (71), scientific R&amp;D (72), advertising (73), professional services (74). Financial services (64&ndash;66) excluded.</td>
+          </tr>
+
+          <tr class="sector-group-header">
+            <td colspan="3"><em><strong>Traditional Sector</strong></em></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Commodities / Retail</td>
+            <td>Agriculture/forestry (01&ndash;03), food/beverage (10&ndash;12), textiles/apparel (13&ndash;15), motor trade (45), wholesale (46), retail (47).</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Industry / Manufacturing</td>
+            <td>Wood/paper (16&ndash;18), chemicals (20), rubber/plastics (22), metals (24&ndash;25), machinery (27&ndash;28), transport equipment (29&ndash;30), furniture (31), other manufacturing (32&ndash;33). Excludes pharmaceuticals (21) and ICT equipment (26).</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Other Services</td>
+            <td>Mining/extraction (05&ndash;09), utilities (35), water/waste (36&ndash;39), construction (41&ndash;43), transport/postal (49&ndash;53), accommodation/food (55&ndash;56), real estate (68), other services (75&ndash;99).</td>
+          </tr>
+
+          <tr class="sector-group-header">
+            <td colspan="3"><em><strong>Excluded from Main Analysis</strong></em></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Financial Sector</td>
+            <td>Banking (64), insurance (65), auxiliary financial services (66), plus holding companies and investment funds identified by name matching. Excluded from sectoral comparisons due to distinct business model and regulatory environment.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -987,14 +1086,17 @@ function buildChart(figId, targetId) {
   Plotly.newPlot(chartId, traces, layout, config);
 }
 
-// ── Figures scroll mode ──
+// ── Figures one-page slider ──
 const _figsRendered = {};
-let _figsObserverInit = false;
+let _currentSlide  = 0;
+let _isTransitioning = false;
+let _figsSliderInit  = false;
+const SLIDE_COUNT = 3;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
   _figsRendered[slideIdx] = true;
-  // Double rAF ensures layout is committed before Plotly measures the container
+  // Double rAF ensures Plotly measures the container after layout is committed
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (slideIdx === 0) buildLineChart('figs-fig1a-chart');
     if (slideIdx === 1) buildChart('fig2a', 'figs-fig2a-chart');
@@ -1002,36 +1104,71 @@ function buildFigsChart(slideIdx) {
   }));
 }
 
-function setupFigsObserver() {
-  if (_figsObserverInit) return;
-  _figsObserverInit = true;
+// Sync every slide height to the container height, then re-apply current transform
+function syncFigsHeights() {
+  const container = document.getElementById('figs-container');
+  if (!container) return;
+  const h = container.clientHeight;
+  document.querySelectorAll('.figs-slide').forEach(slide => { slide.style.height = h + 'px'; });
+  const wrapper = document.getElementById('figs-slides-wrapper');
+  if (!wrapper) return;
+  wrapper.style.transition = 'none';
+  wrapper.style.transform  = `translateY(${-_currentSlide * h}px)`;
+  requestAnimationFrame(() => { wrapper.style.transition = ''; });
+}
+
+function goToSlide(idx) {
+  if (idx < 0 || idx >= SLIDE_COUNT || _isTransitioning) return;
+  _isTransitioning = true;
+  _currentSlide = idx;
 
   const container = document.getElementById('figs-container');
-  const navItems  = document.querySelectorAll('.figs-nav-item');
+  const wrapper   = document.getElementById('figs-slides-wrapper');
+  wrapper.style.transform = `translateY(${-idx * container.clientHeight}px)`;
 
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const idx = +entry.target.dataset.slideIdx;
-        navItems.forEach(n => n.classList.remove('active'));
-        navItems[idx].classList.add('active');
-        buildFigsChart(idx);
-      }
-    });
-  }, { root: container, threshold: 0.4 });
-
-  document.querySelectorAll('.figs-slide').forEach((slide, i) => {
-    slide.dataset.slideIdx = i;
-    io.observe(slide);
+  document.querySelectorAll('.figs-nav-item').forEach((item, i) => {
+    item.classList.toggle('active', i === idx);
   });
 
-  // Sidebar click → scroll to slide top
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const idx = +item.dataset.slideTarget;
-      const slide = document.getElementById('figs-slide-' + idx);
-      container.scrollTo({ top: slide.offsetTop, behavior: 'smooth' });
-    });
+  buildFigsChart(idx);
+  setTimeout(() => { _isTransitioning = false; }, 700);
+}
+
+function setupFigsSlider() {
+  syncFigsHeights();
+  if (_figsSliderInit) return;
+  _figsSliderInit = true;
+
+  // Re-sync on resize
+  window.addEventListener('resize', () => {
+    if (document.body.classList.contains('figs-mode')) syncFigsHeights();
+  });
+
+  // Per-slide wheel + touch: scroll within slide first, transition at boundary
+  document.querySelectorAll('.figs-slide').forEach((slide, idx) => {
+    slide.addEventListener('wheel', (e) => {
+      if (_isTransitioning) { e.preventDefault(); return; }
+      const atBottom = slide.scrollTop + slide.clientHeight >= slide.scrollHeight - 2;
+      const atTop    = slide.scrollTop <= 0;
+      if      (e.deltaY > 0 && atBottom) { e.preventDefault(); goToSlide(idx + 1); }
+      else if (e.deltaY < 0 && atTop)    { e.preventDefault(); goToSlide(idx - 1); }
+    }, { passive: false });
+
+    let _touchY = 0;
+    slide.addEventListener('touchstart', e => { _touchY = e.touches[0].clientY; }, { passive: true });
+    slide.addEventListener('touchend', e => {
+      const delta = _touchY - e.changedTouches[0].clientY;
+      if (Math.abs(delta) < 40) return;
+      const atBottom = slide.scrollTop + slide.clientHeight >= slide.scrollHeight - 2;
+      const atTop    = slide.scrollTop <= 0;
+      if      (delta > 0 && atBottom) goToSlide(idx + 1);
+      else if (delta < 0 && atTop)    goToSlide(idx - 1);
+    }, { passive: true });
+  });
+
+  // Sidebar dot click → jump to slide
+  document.querySelectorAll('.figs-nav-item').forEach(item => {
+    item.addEventListener('click', () => { goToSlide(+item.dataset.slideTarget); });
   });
 }
 
@@ -1039,12 +1176,20 @@ function activateFigures() {
   const headerH = document.querySelector('header').offsetHeight;
   document.documentElement.style.setProperty('--header-h', headerH + 'px');
   document.body.classList.add('figs-mode');
+  setupFigsSlider();
   buildFigsChart(0);
-  setupFigsObserver();
 }
 
 function deactivateFigures() {
   document.body.classList.remove('figs-mode');
+  // Reset each slide's scroll position
+  document.querySelectorAll('.figs-slide').forEach(slide => {
+    slide.style.height = '';
+    slide.scrollTop = 0;
+  });
+  const wrapper = document.getElementById('figs-slides-wrapper');
+  if (wrapper) { wrapper.style.transition = 'none'; wrapper.style.transform = 'translateY(0)'; }
+  _currentSlide = 0;
 }
 </script>
 </body>
