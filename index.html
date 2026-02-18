@@ -253,6 +253,36 @@
   .data-table td:first-child { text-align: left; }
   .data-table tbody tr:last-child td { border-bottom: 2px solid var(--header-bg); }
   .data-table tbody tr:hover td { background: #f3f5f8; }
+  .data-table--wide { font-size: .78rem; }
+  .data-table--wide th,
+  .data-table--wide td { padding: .35rem .55rem; white-space: nowrap; }
+  .data-table--wide th:first-child,
+  .data-table--wide td:first-child { text-align: left; }
+  .data-table-colgroup th {
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    font-weight: 700;
+    color: var(--header-bg);
+    padding-bottom: .25rem;
+  }
+  .data-table-colgroup th:first-child { text-align: left; border-bottom: none; }
+  .table-note {
+    font-size: .82rem;
+    color: var(--text-light);
+    margin-top: .65rem;
+    line-height: 1.55;
+    font-style: italic;
+  }
+  .table-section-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 2.25rem 0 .5rem;
+    color: var(--header-bg);
+    border-bottom: 2px solid var(--tab-active);
+    display: inline-block;
+    padding-bottom: .15rem;
+  }
 
   /* ── Online Appendix content ── */
   .appendix-section { margin-bottom: 2.25rem; }
@@ -304,12 +334,10 @@
   #figs-container {
     flex: 1;
     overflow-y: scroll;
-    scroll-snap-type: y mandatory;
     position: relative;
   }
   .figs-slide {
     min-height: 100%;
-    scroll-snap-align: start;
     display: flex;
     justify-content: center;
     background: var(--bg);
@@ -481,7 +509,7 @@
       <!-- Slide 0 — Figure 1a: Average wealth top 0.001% -->
       <div class="figs-slide" id="figs-slide-0">
         <div class="figs-slide-inner">
-          <div class="figs-fig-title">Figure 1a &nbsp;Average wealth, top 0.001% (approx. 2,600 adults)</div>
+          <div class="figs-fig-title">Figure 1a: Average wealth, top 0.001% (approx. 2,600 adults)</div>
           <div class="figs-chart-wrap">
             <div id="figs-fig1a-chart" class="plotly-chart"></div>
           </div>
@@ -495,7 +523,7 @@
       <!-- Slide 1 — Figure 2a: Tax incidence 1980 -->
       <div class="figs-slide" id="figs-slide-1">
         <div class="figs-slide-inner">
-          <div class="figs-fig-title">Figure 2a &nbsp;Tax Incidence Composition, U.S. 1980</div>
+          <div class="figs-fig-title">Figure 2a: Tax Incidence Composition, U.S. 1980</div>
           <div class="figs-chart-wrap">
             <div id="figs-fig2a-chart" class="plotly-chart"></div>
           </div>
@@ -509,7 +537,7 @@
       <!-- Slide 2 — Figure 2b: Tax incidence 2023 -->
       <div class="figs-slide" id="figs-slide-2">
         <div class="figs-slide-inner">
-          <div class="figs-fig-title">Figure 2b &nbsp;Tax Incidence Composition, U.S. 2023</div>
+          <div class="figs-fig-title">Figure 2b: Tax Incidence Composition, U.S. 2023</div>
           <div class="figs-chart-wrap">
             <div id="figs-fig2b-chart" class="plotly-chart"></div>
           </div>
@@ -562,6 +590,53 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="table-section-heading">Table 2</div>
+    <div class="data-table-wrap">
+      <table class="data-table data-table--wide">
+        <caption>Summary Statistics of U.S. Firms, 2001&ndash;2024</caption>
+        <thead>
+          <tr class="data-table-colgroup">
+            <th></th>
+            <th colspan="5">Turnover</th>
+            <th colspan="5">Profit</th>
+            <th colspan="5">Tax Expense</th>
+          </tr>
+          <tr>
+            <th>Year</th>
+            <th>Min</th><th>Max</th><th>Mean</th><th>SD</th><th>Obs</th>
+            <th>Min</th><th>Max</th><th>Mean</th><th>SD</th><th>Obs</th>
+            <th>Min</th><th>Max</th><th>Mean</th><th>SD</th><th>Obs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2001</td><td>13</td><td>370,525</td><td>1,567</td><td>9,437</td><td>10,000</td><td>&minus;100,292</td><td>42,553</td><td>76</td><td>1,708</td><td>10,000</td><td>&minus;12,243</td><td>21,565</td><td>54</td><td>528</td><td>10,000</td></tr>
+          <tr><td>2002</td><td>13</td><td>359,704</td><td>1,538</td><td>9,452</td><td>10,000</td><td>&minus;72,987</td><td>35,891</td><td>103</td><td>1,497</td><td>10,000</td><td>&minus;3,543</td><td>97,099</td><td>95</td><td>1,207</td><td>10,000</td></tr>
+          <tr><td>2003</td><td>13</td><td>405,053</td><td>1,591</td><td>10,091</td><td>10,000</td><td>&minus;6,695</td><td>54,620</td><td>168</td><td>1,439</td><td>10,000</td><td>&minus;5,770</td><td>17,866</td><td>59</td><td>461</td><td>10,000</td></tr>
+          <tr><td>2004</td><td>13</td><td>484,752</td><td>1,744</td><td>11,165</td><td>10,000</td><td>&minus;26,381</td><td>68,640</td><td>188</td><td>1,617</td><td>10,000</td><td>&minus;7,600</td><td>26,482</td><td>66</td><td>551</td><td>10,000</td></tr>
+          <tr><td>2005</td><td>13</td><td>577,857</td><td>1,867</td><td>12,073</td><td>10,000</td><td>&minus;34,096</td><td>95,675</td><td>212</td><td>1,891</td><td>10,000</td><td>&minus;10,966</td><td>37,512</td><td>70</td><td>631</td><td>10,000</td></tr>
+          <tr><td>2006</td><td>9</td><td>569,954</td><td>1,891</td><td>12,274</td><td>10,000</td><td>&minus;23,508</td><td>105,115</td><td>240</td><td>1,988</td><td>10,000</td><td>&minus;11,336</td><td>43,514</td><td>70</td><td>714</td><td>10,000</td></tr>
+          <tr><td>2007</td><td>9</td><td>591,988</td><td>1,966</td><td>13,000</td><td>10,000</td><td>&minus;45,158</td><td>108,408</td><td>196</td><td>1,864</td><td>10,000</td><td>&minus;8,279</td><td>49,259</td><td>72</td><td>980</td><td>10,000</td></tr>
+          <tr><td>2008</td><td>7</td><td>671,118</td><td>2,005</td><td>13,869</td><td>10,000</td><td>&minus;77,476</td><td>121,784</td><td>65</td><td>2,234</td><td>10,000</td><td>&minus;36,539</td><td>55,749</td><td>44</td><td>881</td><td>10,000</td></tr>
+          <tr><td>2009</td><td>7</td><td>592,529</td><td>1,842</td><td>11,950</td><td>10,000</td><td>&minus;107,009</td><td>150,228</td><td>111</td><td>2,390</td><td>10,000</td><td>&minus;9,217</td><td>22,714</td><td>38</td><td>546</td><td>10,000</td></tr>
+          <tr><td>2010</td><td>7</td><td>588,271</td><td>1,936</td><td>12,536</td><td>10,000</td><td>&minus;21,453</td><td>76,343</td><td>191</td><td>1,645</td><td>10,000</td><td>&minus;4,884</td><td>32,433</td><td>59</td><td>567</td><td>10,000</td></tr>
+          <tr><td>2011</td><td>7</td><td>652,885</td><td>2,094</td><td>13,705</td><td>10,000</td><td>&minus;23,688</td><td>109,793</td><td>233</td><td>2,267</td><td>10,000</td><td>&minus;16,121</td><td>45,010</td><td>63</td><td>710</td><td>10,000</td></tr>
+          <tr><td>2012</td><td>8</td><td>618,268</td><td>2,141</td><td>13,694</td><td>10,000</td><td>&minus;39,293</td><td>124,020</td><td>235</td><td>2,537</td><td>10,000</td><td>&minus;45,947</td><td>121,074</td><td>81</td><td>1,657</td><td>10,000</td></tr>
+          <tr><td>2013</td><td>7</td><td>632,377</td><td>2,172</td><td>13,597</td><td>10,000</td><td>&minus;6,716</td><td>106,789</td><td>275</td><td>2,413</td><td>10,000</td><td>&minus;61,281</td><td>107,453</td><td>74</td><td>1,593</td><td>10,000</td></tr>
+          <tr><td>2014</td><td>7</td><td>632,644</td><td>2,212</td><td>13,397</td><td>10,000</td><td>&minus;12,451</td><td>134,507</td><td>278</td><td>2,465</td><td>10,000</td><td>&minus;3,942</td><td>128,711</td><td>97</td><td>1,628</td><td>10,000</td></tr>
+          <tr><td>2015</td><td>7</td><td>644,256</td><td>2,618</td><td>13,461</td><td>10,000</td><td>&minus;26,343</td><td>132,531</td><td>272</td><td>2,610</td><td>10,000</td><td>&minus;9,236</td><td>155,341</td><td>100</td><td>1,916</td><td>10,000</td></tr>
+          <tr><td>2016</td><td>7</td><td>631,590</td><td>2,617</td><td>13,486</td><td>10,000</td><td>&minus;11,060</td><td>120,993</td><td>296</td><td>2,412</td><td>10,000</td><td>&minus;30,465</td><td>119,822</td><td>93</td><td>1,532</td><td>10,000</td></tr>
+          <tr><td>2017</td><td>6</td><td>623,250</td><td>2,676</td><td>13,870</td><td>10,000</td><td>&minus;24,287</td><td>103,507</td><td>310</td><td>2,294</td><td>10,000</td><td>&minus;65,044</td><td>103,336</td><td>77</td><td>1,655</td><td>10,000</td></tr>
+          <tr><td>2018</td><td>5</td><td>626,475</td><td>2,745</td><td>14,535</td><td>10,000</td><td>&minus;25,210</td><td>91,281</td><td>310</td><td>2,331</td><td>10,000</td><td>&minus;9,659</td><td>81,785</td><td>72</td><td>1,205</td><td>10,000</td></tr>
+          <tr><td>2019</td><td>5</td><td>632,495</td><td>2,772</td><td>14,841</td><td>10,000</td><td>&minus;13,577</td><td>126,272</td><td>330</td><td>2,553</td><td>10,000</td><td>&minus;239,918</td><td>67,495</td><td>18</td><td>3,003</td><td>10,000</td></tr>
+          <tr><td>2020</td><td>4</td><td>636,531</td><td>2,621</td><td>14,884</td><td>10,000</td><td>&minus;35,088</td><td>105,324</td><td>226</td><td>2,446</td><td>10,000</td><td>&minus;210,588</td><td>105,557</td><td>23</td><td>2,763</td><td>10,000</td></tr>
+          <tr><td>2021</td><td>4</td><td>648,698</td><td>2,890</td><td>16,398</td><td>10,000</td><td>&minus;5,840</td><td>129,572</td><td>421</td><td>3,436</td><td>10,000</td><td>&minus;306,164</td><td>126,485</td><td>&minus;22</td><td>4,392</td><td>10,000</td></tr>
+          <tr><td>2022</td><td>3</td><td>615,216</td><td>2,983</td><td>16,991</td><td>10,000</td><td>&minus;32,761</td><td>127,933</td><td>348</td><td>2,872</td><td>10,000</td><td>&minus;9,132</td><td>310,212</td><td>179</td><td>4,063</td><td>10,000</td></tr>
+          <tr><td>2023</td><td>2</td><td>630,749</td><td>2,904</td><td>16,988</td><td>10,000</td><td>&minus;11,630</td><td>123,991</td><td>341</td><td>3,019</td><td>10,000</td><td>&minus;290,742</td><td>31,152</td><td>20</td><td>3,047</td><td>10,000</td></tr>
+          <tr><td>2024</td><td>1</td><td>648,125</td><td>2,937</td><td>17,553</td><td>10,000</td><td>&minus;14,219</td><td>123,485</td><td>379</td><td>3,563</td><td>10,000</td><td>&minus;324,257</td><td>29,749</td><td>&minus;43</td><td>4,300</td><td>10,000</td></tr>
+        </tbody>
+      </table>
+      <p class="table-note"><em>Note:</em> All figures in millions of 2024 USD. Sample of 10,000 U.S. firms per year. Turnover = total operating revenues. Profit = net income after tax. Tax expense = current + deferred corporate income tax. Negative values indicate losses (profit) or net tax benefits from carryforwards/credits (tax). Notable patterns: (1) 2008&ndash;2009 shows financial crisis impact (profit decline, profit volatility spike); (2) Post-2018 shows TCJA effects (tax expense decline, increased volatility); (3) 2019&ndash;2021 extreme tax volatility reflects pandemic accounting adjustments and policy responses. Source: Orbis Historical. Author&rsquo;s calculations.</p>
     </div>
   </div>
 
@@ -943,18 +1018,19 @@ function setupFigsObserver() {
         buildFigsChart(idx);
       }
     });
-  }, { root: container, threshold: 0.5 });
+  }, { root: container, threshold: 0.4 });
 
   document.querySelectorAll('.figs-slide').forEach((slide, i) => {
     slide.dataset.slideIdx = i;
     io.observe(slide);
   });
 
-  // Sidebar click → scroll to slide
+  // Sidebar click → scroll to slide top
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       const idx = +item.dataset.slideTarget;
-      container.scrollTo({ top: idx * container.clientHeight, behavior: 'smooth' });
+      const slide = document.getElementById('figs-slide-' + idx);
+      container.scrollTo({ top: slide.offsetTop, behavior: 'smooth' });
     });
   });
 }
