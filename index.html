@@ -536,6 +536,18 @@
         <span class="figs-nav-label">Fig. 2b</span>
         <div class="figs-dot"></div>
       </div>
+      <div class="figs-nav-item" data-slide-target="3">
+        <span class="figs-nav-label">Fig. 3</span>
+        <div class="figs-dot"></div>
+      </div>
+      <div class="figs-nav-item" data-slide-target="4">
+        <span class="figs-nav-label">Fig. 4a</span>
+        <div class="figs-dot"></div>
+      </div>
+      <div class="figs-nav-item" data-slide-target="5">
+        <span class="figs-nav-label">Fig. 4b</span>
+        <div class="figs-dot"></div>
+      </div>
     </div>
 
     <!-- Full-page scroll container -->
@@ -580,6 +592,48 @@
           <div class="figs-source">Source: Based on Piketty, Saez, and Zucman (2018) data.</div>
           <div class="figs-note">
             <strong>Note:</strong> Equidistant percentile grid emphasises top of distribution. This graph reveals a striking transformation by 2023: total tax incidence now exhibits an inverted U-shape, with both the poor and ultra-rich paying proportionally less than the upper-middle class. The top 0.001% now pay approximately 30% in total taxes, with CIT contributing less than 5 percentage points.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 — Figure 3: Profit Concentration Shares by Profitability Groups -->
+      <div class="figs-slide" id="figs-slide-3">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 3: Profit Concentration Shares by Profitability Groups, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig3-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical (Moody&rsquo;s). Authors&rsquo; calculation.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Share of total positive after-tax profits (losses set to zero) accruing to each profitability group. Top 10% (P90&ndash;100) captures the overall dominance of large firms; Top 1% (P99&ndash;100) and Top 0.1% (P99.9&ndash;100) track superstar concentration at the apex. Middle 40% (P50&ndash;90) represents the broad middle tier of profitable firms. Vertical reference line marks the Tax Cuts and Jobs Act (TCJA, 2018). Sample: balanced panel of approximately 10,000 U.S. firms per year.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 — Figure 4a: Top 1% profit concentration -->
+      <div class="figs-slide" id="figs-slide-4">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 4a: Profit concentration at the Top 1%, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig4a-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical (Moody&rsquo;s). Authors&rsquo; calculation.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Share of total positive after-tax profits (losses set to zero) accruing to the top 1% of firms by profitability (P99&ndash;100). The vertical reference line marks the Tax Cuts and Jobs Act (TCJA), enacted December 2017 and effective from 2018. The post-TCJA period shows increased volatility and a structural shift in the concentration share, reflecting both the rate cut from 35% to 21% and changes in profit-shifting incentives. Sample: balanced panel of approximately 10,000 U.S. firms per year.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5 — Figure 4b: Top 0.1% profit concentration -->
+      <div class="figs-slide" id="figs-slide-5">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 4b: Profit concentration at the Top 0.1%, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig4b-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical (Moody&rsquo;s). Authors&rsquo; calculation.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Share of total positive after-tax profits (losses set to zero) accruing to the top 0.1% of firms by profitability (P99.9&ndash;100). This ultra-elite tier captures the superstar firms &mdash; predominantly Big Tech and Big Pharma &mdash; whose profit shares have risen dramatically over the period. The vertical reference line marks the Tax Cuts and Jobs Act (TCJA, 2018). The pronounced post-2019 acceleration reflects TCJA-induced repatriation dynamics and the structural advantages of IP-intensive multinationals. Sample: balanced panel of approximately 10,000 U.S. firms per year.
           </div>
         </div>
       </div>
@@ -853,7 +907,7 @@
 
 <!-- ════════════ FOOTER ════════════ -->
 <footer>
-  &copy; 2025 Regan, Barrera Rodriguez &amp; Zechlin &mdash; University College Dublin &mdash; <a href="https://democracychallenged.com/" target="_blank">ERC Project Democracy Challenged</a>
+  &copy; 2025 Aidan Regan et al. &mdash; University College Dublin &mdash; <a href="https://democracychallenged.com/" target="_blank">ERC Project Democracy Challenged</a>
 </footer>
 
 <!-- ════════════ JAVASCRIPT ════════════ -->
@@ -934,25 +988,41 @@ function processTop001CSV(csvText) {
   _cache['fig1a'] = { years, values };
 }
 
+// ── Process profit concentration CSV (fig3_5_data.csv) ──
+function processConcentrationCSV(csvText) {
+  const rows = parseCSV(csvText);
+  const valid = rows.filter(r => r.year && +r.year >= 2001);
+  _cache['fig3_5'] = {
+    years: valid.map(r => +r.year),
+    top10: valid.map(r => +r.conc_top10),
+    top1:  valid.map(r => +r.conc_top1),
+    top01: valid.map(r => +r.conc_top0_1),
+    mid40: valid.map(r => +r.conc_p50_p90)
+  };
+}
+
 function getData(figId) {
   return _cache[figId];
 }
 
 // ── Fetch all CSVs on page load ──
 const DATA_URLS = {
-  fig1a: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/top001data.csv',
-  fig2a: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
-  fig2b: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv'
+  fig1a:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/top001data.csv',
+  fig2a:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
+  fig2b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv',
+  fig3_5: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig3_5_data.csv'
 };
 
 Promise.all([
-  fetch(DATA_URLS.fig1a).then(r => { if (!r.ok) throw new Error('fig1a fetch failed'); return r.text(); }),
-  fetch(DATA_URLS.fig2a).then(r => { if (!r.ok) throw new Error('fig2a fetch failed'); return r.text(); }),
-  fetch(DATA_URLS.fig2b).then(r => { if (!r.ok) throw new Error('fig2b fetch failed'); return r.text(); })
-]).then(([csv1a, csv2a, csv2b]) => {
+  fetch(DATA_URLS.fig1a).then(r  => { if (!r.ok)  throw new Error('fig1a fetch failed');  return r.text();  }),
+  fetch(DATA_URLS.fig2a).then(r  => { if (!r.ok)  throw new Error('fig2a fetch failed');  return r.text();  }),
+  fetch(DATA_URLS.fig2b).then(r  => { if (!r.ok)  throw new Error('fig2b fetch failed');  return r.text();  }),
+  fetch(DATA_URLS.fig3_5).then(r => { if (!r.ok)  throw new Error('fig3_5 fetch failed'); return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
+  processConcentrationCSV(csv35);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1086,12 +1156,193 @@ function buildChart(figId, targetId) {
   Plotly.newPlot(chartId, traces, layout, config);
 }
 
+// ── Build Figure 3: Profit Concentration Shares (4 lines) ──
+function buildFig3Chart(targetId) {
+  const d = getData('fig3_5');
+  if (!d) return;
+
+  const series = [
+    { key: 'top10', name: 'Top 10% (P90\u2013100)',    color: '#0072B2', dash: 'solid' },
+    { key: 'top1',  name: 'Top 1% (P99\u2013100)',     color: '#D55E00', dash: 'dash' },
+    { key: 'top01', name: 'Top 0.1% (P99.9\u2013100)', color: '#CC79A7', dash: 'dashdot' },
+    { key: 'mid40', name: 'Middle 40% (P50\u201390)',   color: '#009E73', dash: 'dot' }
+  ];
+
+  const traces = series.map(s => ({
+    x: d.years,
+    y: d[s.key],
+    name: s.name,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: s.color, width: 2, dash: s.dash },
+    hovertemplate: '<b>' + s.name + '</b><br>%{x}<br>%{y:.1f}%<extra></extra>'
+  }));
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Concentration share (%)', font: { size: 12 } },
+      ticksuffix: '%',
+      tickfont: { size: 10 },
+      range: [0, 100],
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.18,
+      xanchor: 'left',
+      font: { size: 11 }
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 65, r: 20, t: 50, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, traces, layout, config);
+}
+
+// ── Build Figure 4a: Top 1% concentration (single line + TCJA) ──
+function buildFig4aChart(targetId) {
+  const d = getData('fig3_5');
+  if (!d) return;
+
+  const trace = {
+    x: d.years,
+    y: d.top1,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: '#D55E00', width: 2.5 },
+    hovertemplate: '<b>%{x}</b><br>%{y:.1f}%<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Top 1% share (%)', font: { size: 12 } },
+      ticksuffix: '%',
+      tickfont: { size: 10 },
+      range: [45, 65],
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    shapes: [{
+      type: 'line',
+      x0: 2018, x1: 2018,
+      y0: 0, y1: 1,
+      yref: 'paper',
+      line: { color: 'rgba(80,80,80,0.65)', width: 1.2, dash: 'solid' }
+    }],
+    annotations: [{
+      x: 2018.25,
+      y: 0.97,
+      xref: 'x', yref: 'paper',
+      text: 'TCJA<br>(2018)',
+      showarrow: false,
+      xanchor: 'left',
+      font: { size: 11, color: '#444' }
+    }],
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 65, r: 20, t: 20, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [trace], layout, config);
+}
+
+// ── Build Figure 4b: Top 0.1% concentration (single line + TCJA) ──
+function buildFig4bChart(targetId) {
+  const d = getData('fig3_5');
+  if (!d) return;
+
+  const trace = {
+    x: d.years,
+    y: d.top01,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: '#CC79A7', width: 2.5 },
+    hovertemplate: '<b>%{x}</b><br>%{y:.1f}%<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Top 0.1% share (%)', font: { size: 12 } },
+      ticksuffix: '%',
+      tickfont: { size: 10 },
+      range: [10, 32],
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    shapes: [{
+      type: 'line',
+      x0: 2018, x1: 2018,
+      y0: 0, y1: 1,
+      yref: 'paper',
+      line: { color: 'rgba(80,80,80,0.65)', width: 1.2, dash: 'solid' }
+    }],
+    annotations: [{
+      x: 2018.25,
+      y: 0.97,
+      xref: 'x', yref: 'paper',
+      text: 'TCJA<br>(2018)',
+      showarrow: false,
+      xanchor: 'left',
+      font: { size: 11, color: '#444' }
+    }],
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 65, r: 20, t: 20, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [trace], layout, config);
+}
+
 // ── Figures one-page slider ──
 const _figsRendered = {};
 let _currentSlide  = 0;
 let _isTransitioning = false;
 let _figsSliderInit  = false;
-const SLIDE_COUNT = 3;
+const SLIDE_COUNT = 6;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
@@ -1101,6 +1352,9 @@ function buildFigsChart(slideIdx) {
     if (slideIdx === 0) buildLineChart('figs-fig1a-chart');
     if (slideIdx === 1) buildChart('fig2a', 'figs-fig2a-chart');
     if (slideIdx === 2) buildChart('fig2b', 'figs-fig2b-chart');
+    if (slideIdx === 3) buildFig3Chart('figs-fig3-chart');
+    if (slideIdx === 4) buildFig4aChart('figs-fig4a-chart');
+    if (slideIdx === 5) buildFig4bChart('figs-fig4b-chart');
   }));
 }
 
