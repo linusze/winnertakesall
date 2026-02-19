@@ -548,6 +548,14 @@
         <span class="figs-nav-label">Fig. 4b</span>
         <div class="figs-dot"></div>
       </div>
+      <div class="figs-nav-item" data-slide-target="6">
+        <span class="figs-nav-label">Fig. 5a</span>
+        <div class="figs-dot"></div>
+      </div>
+      <div class="figs-nav-item" data-slide-target="7">
+        <span class="figs-nav-label">Fig. 5b</span>
+        <div class="figs-dot"></div>
+      </div>
     </div>
 
     <!-- Full-page scroll container -->
@@ -634,6 +642,34 @@
           <div class="figs-source">Source: Orbis Historical (Moody&rsquo;s). Authors&rsquo; calculation.</div>
           <div class="figs-note">
             <strong>Note:</strong> Share of total positive after-tax profits (losses set to zero) accruing to the top 0.1% of firms by profitability (P99.9&ndash;100). This ultra-elite tier captures the superstar firms &mdash; predominantly Big Tech and Big Pharma &mdash; whose profit shares have risen dramatically over the period. The vertical reference line marks the Tax Cuts and Jobs Act (TCJA, 2018). The pronounced post-2019 acceleration reflects TCJA-induced repatriation dynamics and the structural advantages of IP-intensive multinationals. Sample: balanced panel of approximately 10,000 U.S. firms per year.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6 — Figure 5a: Average after-tax profitability across tiers -->
+      <div class="figs-slide" id="figs-slide-6">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 5a: Average after-tax profitability across tiers, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig5a-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Average profit per firm by profitability tier, in billions of 2024 USD. The panel shows three tiers: Middle 40% (P50&ndash;P90), Next 9% (P90&ndash;P99), and Top 1% (P99&ndash;100). Average profits have grown at dramatically different speeds across tiers. For the Next 9% (P90&ndash;P99), average profit increased from $400 million in 2001 to $1.6 billion in 2024, representing a 300% total increase (6.2% compound annual growth rate). For the Top 1%, average profit surged from $5.4 billion in 2001 to nearly $30 billion in 2024, a 456% increase (7.7% CAGR). Profit growth has been highly concentrated at the very top, with the most profitable firms pulling dramatically ahead. The vertical line marks the Tax Cuts and Jobs Act (TCJA) of 2018, after which growth accelerated further.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7 — Figure 5b: Average after-tax profitability top 0.1% -->
+      <div class="figs-slide" id="figs-slide-7">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 5b: Average after-tax profitability for the top 0.1%, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig5b-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Average profit per firm for the top 0.1% (10 firms). The top 0.1% experienced explosive growth: average profit skyrocketed from $18.6 billion in 2001 to $140 billion in 2024, representing a 653% total increase (9.2% CAGR). This demonstrates that profit growth has been highly concentrated at the very top, with the most profitable firms pulling dramatically ahead. The vertical line marks the Tax Cuts and Jobs Act (TCJA) of 2018, after which growth accelerated further.
           </div>
         </div>
       </div>
@@ -873,7 +909,7 @@
              alt="Aidan Regan" class="author-photo">
         <div class="author-name">Aidan Regan</div>
         <div class="author-email">aidan.regan@ucd.ie</div>
-        <div class="author-bio">Short bio about the author.</div>
+        <div class="author-bio">Professor of Political Economy, Lead investigator in the Democracy Challenged project.</div>
       </div>
 
       <div class="author-card">
@@ -881,7 +917,7 @@
              alt="Oscar Barrera Rodriguez" class="author-photo">
         <div class="author-name">Oscar Barrera Rodriguez</div>
         <div class="author-email">oscar.barrerarodriguez@ucd.ie</div>
-        <div class="author-bio">Short bio about the author.</div>
+        <div class="author-bio">Democracy Challenged post-doc. Background: Economics.</div>
       </div>
 
       <div class="author-card">
@@ -889,7 +925,7 @@
              alt="Rafael Quintero God&#237;nez" class="author-photo">
         <div class="author-name">Rafael Quintero God&#237;nez</div>
         <div class="author-email">rafael.quinterogodinez@ucd.ie</div>
-        <div class="author-bio">Short bio about the author.</div>
+        <div class="author-bio">Democracy Challenged post-doc. Background: Law.</div>
       </div>
 
       <div class="author-card">
@@ -897,7 +933,7 @@
              alt="Linus Zechlin" class="author-photo">
         <div class="author-name">Linus Zechlin</div>
         <div class="author-email">linus.zechlin@ucdconnect.ie</div>
-        <div class="author-bio">Short bio about the author.</div>
+        <div class="author-bio">Democracy Challenged PhD candidate. Background: Economics &amp; IPE.</div>
       </div>
 
     </div>
@@ -1001,6 +1037,20 @@ function processConcentrationCSV(csvText) {
   };
 }
 
+// ── Process average profits CSV (fig5_data.csv) ──
+// Values expected in millions USD; divides by 1000 to store as billions
+function processFig5CSV(csvText) {
+  const rows = parseCSV(csvText);
+  const valid = rows.filter(r => r.year && +r.year >= 2001);
+  _cache['fig5'] = {
+    years:  valid.map(r => +r.year),
+    p50_90: valid.map(r => +r.avg_profitP50_90 / 1000),
+    p90_99: valid.map(r => +r.avg_profitP90_99 / 1000),
+    top1:   valid.map(r => +r.avg_profitTop1   / 1000),
+    top01:  valid.map(r => +r.avg_profitTop0_1 / 1000)
+  };
+}
+
 function getData(figId) {
   return _cache[figId];
 }
@@ -1010,19 +1060,22 @@ const DATA_URLS = {
   fig1a:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/top001data.csv',
   fig2a:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
   fig2b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv',
-  fig3_5: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig3_5_data.csv'
+  fig3_5: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig3_5_data.csv',
+  fig5:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5_data.csv'
 };
 
 Promise.all([
   fetch(DATA_URLS.fig1a).then(r  => { if (!r.ok)  throw new Error('fig1a fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig2a).then(r  => { if (!r.ok)  throw new Error('fig2a fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig2b).then(r  => { if (!r.ok)  throw new Error('fig2b fetch failed');  return r.text();  }),
-  fetch(DATA_URLS.fig3_5).then(r => { if (!r.ok)  throw new Error('fig3_5 fetch failed'); return r.text();  })
-]).then(([csv1a, csv2a, csv2b, csv35]) => {
+  fetch(DATA_URLS.fig3_5).then(r => { if (!r.ok)  throw new Error('fig3_5 fetch failed'); return r.text();  }),
+  fetch(DATA_URLS.fig5).then(r   => { if (!r.ok)  throw new Error('fig5 fetch failed');   return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35, csv5]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
   processConcentrationCSV(csv35);
+  processFig5CSV(csv5);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1337,12 +1390,149 @@ function buildFig4bChart(targetId) {
   Plotly.newPlot(targetId, [trace], layout, config);
 }
 
+// ── Build Figure 5a: Average profit across tiers (3 lines + TCJA) ──
+function buildFig5aChart(targetId) {
+  const d = getData('fig5');
+  if (!d) return;
+
+  const series = [
+    { key: 'p50_90', name: 'Middle 40% (P50\u201390)', color: '#009E73', dash: 'solid' },
+    { key: 'p90_99', name: 'Next 9% (P90\u201399)',    color: '#0072B2', dash: 'dash' },
+    { key: 'top1',   name: 'Top 1% (P99\u2013100)',    color: '#D55E00', dash: 'dashdot' }
+  ];
+
+  const traces = series.map(s => ({
+    x: d.years,
+    y: d[s.key],
+    name: s.name,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: s.color, width: 2, dash: s.dash },
+    hovertemplate: '<b>' + s.name + '</b><br>%{x}<br>$%{y:.2f}B<extra></extra>'
+  }));
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Average profit (USD billions, 2024)', font: { size: 12 } },
+      tickprefix: '$',
+      ticksuffix: 'B',
+      tickformat: '.1f',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    shapes: [{
+      type: 'line',
+      x0: 2018, x1: 2018,
+      y0: 0, y1: 1,
+      yref: 'paper',
+      line: { color: 'rgba(80,80,80,0.65)', width: 1.2, dash: 'solid' }
+    }],
+    annotations: [{
+      x: 2018.25,
+      y: 0.97,
+      xref: 'x', yref: 'paper',
+      text: 'TCJA<br>(2018)',
+      showarrow: false,
+      xanchor: 'left',
+      font: { size: 11, color: '#444' }
+    }],
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.18,
+      xanchor: 'left',
+      font: { size: 11 }
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 75, r: 20, t: 50, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, traces, layout, config);
+}
+
+// ── Build Figure 5b: Average profit top 0.1% (single line + TCJA) ──
+function buildFig5bChart(targetId) {
+  const d = getData('fig5');
+  if (!d) return;
+
+  const trace = {
+    x: d.years,
+    y: d.top01,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: '#CC79A7', width: 2.5 },
+    hovertemplate: '<b>%{x}</b><br>$%{y:.1f}B<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Average profit (USD billions, 2024)', font: { size: 12 } },
+      tickprefix: '$',
+      ticksuffix: 'B',
+      tickformat: '.0f',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      zeroline: false
+    },
+    shapes: [{
+      type: 'line',
+      x0: 2018, x1: 2018,
+      y0: 0, y1: 1,
+      yref: 'paper',
+      line: { color: 'rgba(80,80,80,0.65)', width: 1.2, dash: 'solid' }
+    }],
+    annotations: [{
+      x: 2018.25,
+      y: 0.97,
+      xref: 'x', yref: 'paper',
+      text: 'TCJA<br>(2018)',
+      showarrow: false,
+      xanchor: 'left',
+      font: { size: 11, color: '#444' }
+    }],
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 75, r: 20, t: 20, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [trace], layout, config);
+}
+
 // ── Figures one-page slider ──
 const _figsRendered = {};
 let _currentSlide  = 0;
 let _isTransitioning = false;
 let _figsSliderInit  = false;
-const SLIDE_COUNT = 6;
+const SLIDE_COUNT = 8;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
@@ -1355,6 +1545,8 @@ function buildFigsChart(slideIdx) {
     if (slideIdx === 3) buildFig3Chart('figs-fig3-chart');
     if (slideIdx === 4) buildFig4aChart('figs-fig4a-chart');
     if (slideIdx === 5) buildFig4bChart('figs-fig4b-chart');
+    if (slideIdx === 6) buildFig5aChart('figs-fig5a-chart');
+    if (slideIdx === 7) buildFig5bChart('figs-fig5b-chart');
   }));
 }
 
