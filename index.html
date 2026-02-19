@@ -1037,17 +1037,25 @@ function processConcentrationCSV(csvText) {
   };
 }
 
-// ── Process average profits CSV (fig5_data.csv) ──
-// Values expected in millions USD; divides by 1000 to store as billions
+// ── Process average profits CSV (fig5_data.csv) — values in raw USD, stored as billions ──
 function processFig5CSV(csvText) {
   const rows = parseCSV(csvText);
   const valid = rows.filter(r => r.year && +r.year >= 2001);
   _cache['fig5'] = {
     years:  valid.map(r => +r.year),
-    p50_90: valid.map(r => +r.avg_profitP50_90 / 1000),
-    p90_99: valid.map(r => +r.avg_profitP90_99 / 1000),
-    top1:   valid.map(r => +r.avg_profitTop1   / 1000),
-    top01:  valid.map(r => +r.avg_profitTop0_1 / 1000)
+    p50_90: valid.map(r => +r.avg_profitP50_90 / 1e9),
+    p90_99: valid.map(r => +r.avg_profitP90_99 / 1e9),
+    top1:   valid.map(r => +r.avg_profitTop1   / 1e9)
+  };
+}
+
+// ── Process top 0.1% avg profit CSV (fig5b_data.csv) — values in raw USD, stored as billions ──
+function processFig5bCSV(csvText) {
+  const rows = parseCSV(csvText);
+  const valid = rows.filter(r => r.year && +r.year >= 2001);
+  _cache['fig5b'] = {
+    years:  valid.map(r => +r.year),
+    values: valid.map(r => +r.avg_profitTop0_1 / 1e9)
   };
 }
 
@@ -1061,7 +1069,8 @@ const DATA_URLS = {
   fig2a:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1_data.csv',
   fig2b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig1b_data.csv',
   fig3_5: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig3_5_data.csv',
-  fig5:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5_data.csv'
+  fig5:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5_data.csv',
+  fig5b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5b_data.csv'
 };
 
 Promise.all([
@@ -1069,13 +1078,15 @@ Promise.all([
   fetch(DATA_URLS.fig2a).then(r  => { if (!r.ok)  throw new Error('fig2a fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig2b).then(r  => { if (!r.ok)  throw new Error('fig2b fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig3_5).then(r => { if (!r.ok)  throw new Error('fig3_5 fetch failed'); return r.text();  }),
-  fetch(DATA_URLS.fig5).then(r   => { if (!r.ok)  throw new Error('fig5 fetch failed');   return r.text();  })
-]).then(([csv1a, csv2a, csv2b, csv35, csv5]) => {
+  fetch(DATA_URLS.fig5).then(r   => { if (!r.ok)  throw new Error('fig5 fetch failed');   return r.text();  }),
+  fetch(DATA_URLS.fig5b).then(r  => { if (!r.ok)  throw new Error('fig5b fetch failed');  return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
   processConcentrationCSV(csv35);
   processFig5CSV(csv5);
+  processFig5bCSV(csv5b);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1467,12 +1478,12 @@ function buildFig5aChart(targetId) {
 
 // ── Build Figure 5b: Average profit top 0.1% (single line + TCJA) ──
 function buildFig5bChart(targetId) {
-  const d = getData('fig5');
+  const d = getData('fig5b');
   if (!d) return;
 
   const trace = {
     x: d.years,
-    y: d.top01,
+    y: d.values,
     type: 'scatter',
     mode: 'lines',
     line: { color: '#CC79A7', width: 2.5 },
