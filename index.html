@@ -1114,20 +1114,29 @@ function processFig5bCSV(csvText) {
 }
 
 // ── Process Magnificent 7 ETR CSV (fig8_data.csv) — values already in % ──
+// Normalises column names to lowercase to match R's clean_names() output.
+// Missing values become null so Plotly renders them as line gaps.
 function processFig8CSV(csvText) {
   const rows = parseCSV(csvText);
-  const valid = rows.filter(r => r.year && +r.year >= 2003 && +r.year <= 2024);
+  // Lowercase + trim all keys regardless of how the CSV was exported
+  const norm = rows.map(r => {
+    const out = {};
+    Object.keys(r).forEach(k => { out[k.toLowerCase().trim()] = r[k]; });
+    return out;
+  });
+  const toVal = (r, col) => { const v = parseFloat(r[col]); return isNaN(v) ? null : v; };
+  const valid = norm.filter(r => r.year && +r.year >= 2003 && +r.year <= 2024);
   _cache['fig8'] = {
     years:     valid.map(r => +r.year),
-    alphabet:  valid.map(r => +r.etr5_alphabet),
-    amazon:    valid.map(r => +r.etr5_amazon),
-    apple:     valid.map(r => +r.etr5_apple),
-    meta:      valid.map(r => +r.etr5_meta),
-    microsoft: valid.map(r => +r.etr5_microsoft),
-    netflix:   valid.map(r => +r.etr5_netflix),
-    nvidia:    valid.map(r => +r.etr5_nvidia),
-    oracle:    valid.map(r => +r.etr5_oracle),
-    tesla:     valid.map(r => +r.etr5_tesla)
+    alphabet:  valid.map(r => toVal(r, 'etr5_alphabet')),
+    amazon:    valid.map(r => toVal(r, 'etr5_amazon')),
+    apple:     valid.map(r => toVal(r, 'etr5_apple')),
+    meta:      valid.map(r => toVal(r, 'etr5_meta')),
+    microsoft: valid.map(r => toVal(r, 'etr5_microsoft')),
+    netflix:   valid.map(r => toVal(r, 'etr5_netflix')),
+    nvidia:    valid.map(r => toVal(r, 'etr5_nvidia')),
+    oracle:    valid.map(r => toVal(r, 'etr5_oracle')),
+    tesla:     valid.map(r => toVal(r, 'etr5_tesla'))
   };
 }
 
