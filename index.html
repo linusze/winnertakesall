@@ -374,7 +374,8 @@
     overflow-y: auto;
     overscroll-behavior: none;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     background: var(--bg);
     padding: 1.5rem 0 2.5rem;
   }
@@ -384,15 +385,25 @@
     padding: 0 2rem;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
   .figs-fig-title {
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--header-bg);
+    margin-bottom: .25rem;
+  }
+  .figs-fig-subtitle {
+    font-size: .88rem;
+    color: var(--text-light);
     margin-bottom: .45rem;
+    font-style: italic;
   }
   .figs-chart-wrap {
-    height: 480px;
+    flex: 1;
+    min-height: 300px;
+    max-height: 540px;
     background: var(--card-bg);
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0,0,0,.08);
@@ -568,6 +579,14 @@
         <span class="figs-nav-label">Fig. 8</span>
         <div class="figs-dot"></div>
       </div>
+      <div class="figs-nav-item" data-slide-target="11">
+        <span class="figs-nav-label">Fig. 9a</span>
+        <div class="figs-dot"></div>
+      </div>
+      <div class="figs-nav-item" data-slide-target="12">
+        <span class="figs-nav-label">Fig. 9b</span>
+        <div class="figs-dot"></div>
+      </div>
     </div>
 
     <!-- Full-page scroll container -->
@@ -718,12 +737,41 @@
       <div class="figs-slide" id="figs-slide-10">
         <div class="figs-slide-inner">
           <div class="figs-fig-title">Figure 8: Magnificent 7 ETRs (5-year trailing averages), 2003&ndash;2024</div>
+          <div class="figs-fig-subtitle">Click on a corporate group to isolate its ETR.</div>
           <div class="figs-chart-wrap">
             <div id="figs-fig8-chart" class="plotly-chart"></div>
           </div>
           <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
           <div class="figs-note">
             <strong>Note:</strong> 5-year trailing average ETRs for major tech corporations. Pre-TCJA: 25&ndash;35%. Post-TCJA: 10&ndash;20% (2024). Nvidia ~0%, Tesla ~5%, Netflix ~10%, Amazon/Meta 12&ndash;15%, Apple/Microsoft ~15%, Oracle ~20%. TCJA benefited the largest corporations disproportionately. Statutory rate: 35% &rarr; 21%.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11 — Figure 9a: Total Intangible Fixed Assets -->
+      <div class="figs-slide" id="figs-slide-11">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 9a: Total Intangible Fixed Assets: Knowledge vs. Traditional Sectors, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig9a-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Intangible fixed assets (patents, trademarks, licences, goodwill, and other intellectual property) in billions of 2024 USD. Both sectors experienced sustained growth in intangible assets over the period, but the knowledge sector&rsquo;s expansion is particularly striking. In aggregate knowledge sector intangibles roughly doubled from approximately $1.85 trillion in 2001 to a peak of $4.1 trillion around 2022, maintaining a gap of $1.5 trillion above the traditional sector by 2024.
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12 — Figure 9b: Mean Intangible Fixed Assets per Corporation -->
+      <div class="figs-slide" id="figs-slide-12">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 9b: Mean Intangible Fixed Assets per Corporation: Knowledge vs. Traditional Sectors, 2001&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig9b-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Intangible fixed assets (patents, trademarks, licences, goodwill, and other intellectual property) in billions of 2024 USD. Both sectors experienced sustained growth in intangible assets over the period, but the knowledge sector&rsquo;s expansion is particularly striking. The average knowledge sector corporation held approximately $0.7 billion in intangibles in 2001, rising to $2.45 billion by 2024, a 250% increase and 3.5 times the starting value. The average traditional sector corporation also grew (from $0.45 billion to $1.5 billion, +233%), but the absolute gap between sectors widened from $0.25 billion per corporation in 2001 to nearly $1 billion by 2024.
           </div>
         </div>
       </div>
@@ -1140,6 +1188,26 @@ function processFig8CSV(csvText) {
   };
 }
 
+// ── Process intangible fixed assets CSV (fig9_data.csv) — raw USD, stored as billions ──
+// Columns: year, total_intang_know, total_intang_trad, avg_intang_know, avg_intang_trad
+function processFig9CSV(csvText) {
+  const rows = parseCSV(csvText);
+  const norm = rows.map(r => {
+    const out = {};
+    Object.keys(r).forEach(k => { out[k.toLowerCase().trim()] = r[k]; });
+    return out;
+  });
+  const toVal = (r, col) => { const v = parseFloat(r[col]); return isNaN(v) ? null : v; };
+  const valid = norm.filter(r => r.year && +r.year >= 2001 && +r.year <= 2024);
+  _cache['fig9'] = {
+    years:         valid.map(r => +r.year),
+    totalKnow:     valid.map(r => toVal(r, 'total_intang_know') !== null ? toVal(r, 'total_intang_know') / 1e9 : null),
+    totalTrad:     valid.map(r => toVal(r, 'total_intang_trad') !== null ? toVal(r, 'total_intang_trad') / 1e9 : null),
+    avgKnow:       valid.map(r => toVal(r, 'avg_intang_know')   !== null ? toVal(r, 'avg_intang_know')   / 1e9 : null),
+    avgTrad:       valid.map(r => toVal(r, 'avg_intang_trad')   !== null ? toVal(r, 'avg_intang_trad')   / 1e9 : null)
+  };
+}
+
 // ── Process implied ETR by tier CSV (fig7_data.csv) — values are decimals, stored as % ──
 function processFig7CSV(csvText) {
   const rows = parseCSV(csvText);
@@ -1177,7 +1245,8 @@ const DATA_URLS = {
   fig5b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5b_data.csv',
   fig6:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig6_data.csv',
   fig7:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig7_data.csv?v=2',
-  fig8:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig8_data.csv'
+  fig8:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig8_data.csv',
+  fig9:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig9_data.csv'
 };
 
 Promise.all([
@@ -1189,8 +1258,9 @@ Promise.all([
   fetch(DATA_URLS.fig5b).then(r  => { if (!r.ok)  throw new Error('fig5b fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig6).then(r   => { if (!r.ok)  throw new Error('fig6 fetch failed');   return r.text();  }),
   fetch(DATA_URLS.fig7).then(r   => { if (!r.ok)  throw new Error('fig7 fetch failed');   return r.text();  }),
-  fetch(DATA_URLS.fig8).then(r   => { if (!r.ok)  throw new Error('fig8 fetch failed');   return r.text();  })
-]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6, csv7, csv8]) => {
+  fetch(DATA_URLS.fig8).then(r   => { if (!r.ok)  throw new Error('fig8 fetch failed');   return r.text();  }),
+  fetch(DATA_URLS.fig9).then(r   => { if (!r.ok)  throw new Error('fig9 fetch failed');   return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6, csv7, csv8, csv9]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
@@ -1200,6 +1270,7 @@ Promise.all([
   processFig6CSV(csv6);
   processFig7CSV(csv7);
   processFig8CSV(csv8);
+  processFig9CSV(csv9);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1993,29 +2064,187 @@ function buildFig6Chart(targetId) {
   Plotly.newPlot(targetId, [traceKnowledge, traceTraditional], layout, config);
 }
 
+// ── Build Figure 9a: Total Intangible Fixed Assets — Knowledge vs Traditional ──
+function buildFig9aChart(targetId) {
+  const d = getData('fig9');
+  if (!d) return;
+
+  const traceKnow = {
+    x: d.years, y: d.totalKnow,
+    name: 'Knowledge Sector',
+    type: 'scatter', mode: 'lines+markers',
+    line:   { color: '#0072B2', width: 2, dash: 'solid' },
+    marker: { color: '#0072B2', size: 6, symbol: 'circle' },
+    hovertemplate: '<b>Knowledge Sector</b><br>%{x}<br>$%{y:.2f}B<extra></extra>'
+  };
+
+  const traceTrad = {
+    x: d.years, y: d.totalTrad,
+    name: 'Traditional Sector',
+    type: 'scatter', mode: 'lines+markers',
+    line:   { color: '#009E73', width: 2, dash: 'solid' },
+    marker: { color: '#009E73', size: 6, symbol: 'square' },
+    hovertemplate: '<b>Traditional Sector</b><br>%{x}<br>$%{y:.2f}B<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 3,
+      tickfont: { size: 10 },
+      showgrid: true, gridcolor: '#f0f0f0',
+      zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Total Intangible Assets (USD 2024, billions)', font: { size: 12 } },
+      tickprefix: '$', ticksuffix: 'B',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      rangemode: 'nonnegative'
+    },
+    shapes: [
+      {
+        type: 'line', x0: 2018, x1: 2018,
+        y0: 0, y1: 1,
+        xref: 'x', yref: 'paper',
+        line: { color: 'firebrick', width: 1.2, dash: 'dot' }
+      }
+    ],
+    annotations: [
+      {
+        x: 2018.3, y: 0.97,
+        xref: 'x', yref: 'paper',
+        text: 'TCJA<br>(2018)',
+        showarrow: false,
+        xanchor: 'left',
+        font: { size: 10, color: 'firebrick' }
+      }
+    ],
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.12,
+      xanchor: 'left',
+      font: { size: 11 }
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 85, r: 20, t: 55, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [traceKnow, traceTrad], layout, config);
+}
+
+// ── Build Figure 9b: Mean Intangible Fixed Assets per Corporation — Knowledge vs Traditional ──
+function buildFig9bChart(targetId) {
+  const d = getData('fig9');
+  if (!d) return;
+
+  const traceKnow = {
+    x: d.years, y: d.avgKnow,
+    name: 'Knowledge Sector',
+    type: 'scatter', mode: 'lines+markers',
+    line:   { color: '#0072B2', width: 2, dash: 'solid' },
+    marker: { color: '#0072B2', size: 6, symbol: 'circle' },
+    hovertemplate: '<b>Knowledge Sector</b><br>%{x}<br>$%{y:.3f}B<extra></extra>'
+  };
+
+  const traceTrad = {
+    x: d.years, y: d.avgTrad,
+    name: 'Traditional Sector',
+    type: 'scatter', mode: 'lines+markers',
+    line:   { color: '#009E73', width: 2, dash: 'solid' },
+    marker: { color: '#009E73', size: 6, symbol: 'square' },
+    hovertemplate: '<b>Traditional Sector</b><br>%{x}<br>$%{y:.3f}B<extra></extra>'
+  };
+
+  const layout = {
+    xaxis: {
+      tick0: 2001, dtick: 3,
+      tickfont: { size: 10 },
+      showgrid: true, gridcolor: '#f0f0f0',
+      zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Mean Intangible Assets per Corporation (USD 2024, billions)', font: { size: 12 } },
+      tickprefix: '$', ticksuffix: 'B',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      rangemode: 'nonnegative'
+    },
+    shapes: [
+      {
+        type: 'line', x0: 2018, x1: 2018,
+        y0: 0, y1: 1,
+        xref: 'x', yref: 'paper',
+        line: { color: 'firebrick', width: 1.2, dash: 'dot' }
+      }
+    ],
+    annotations: [
+      {
+        x: 2018.3, y: 0.97,
+        xref: 'x', yref: 'paper',
+        text: 'TCJA<br>(2018)',
+        showarrow: false,
+        xanchor: 'left',
+        font: { size: 10, color: 'firebrick' }
+      }
+    ],
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.12,
+      xanchor: 'left',
+      font: { size: 11 }
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 85, r: 20, t: 55, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, [traceKnow, traceTrad], layout, config);
+}
+
 // ── Figures one-page slider ──
 const _figsRendered = {};
 let _currentSlide  = 0;
 let _isTransitioning = false;
 let _figsSliderInit  = false;
-const SLIDE_COUNT = 11;
+const SLIDE_COUNT = 13;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
   _figsRendered[slideIdx] = true;
   // Double rAF ensures Plotly measures the container after layout is committed
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    if (slideIdx === 0) buildLineChart('figs-fig1a-chart');
-    if (slideIdx === 1) buildChart('fig2a', 'figs-fig2a-chart');
-    if (slideIdx === 2) buildChart('fig2b', 'figs-fig2b-chart');
-    if (slideIdx === 3) buildFig3Chart('figs-fig3-chart');
-    if (slideIdx === 4) buildFig4aChart('figs-fig4a-chart');
-    if (slideIdx === 5) buildFig4bChart('figs-fig4b-chart');
-    if (slideIdx === 6) buildFig5aChart('figs-fig5a-chart');
-    if (slideIdx === 7) buildFig5bChart('figs-fig5b-chart');
-    if (slideIdx === 8) buildFig6Chart('figs-fig6-chart');
+    if (slideIdx === 0)  buildLineChart('figs-fig1a-chart');
+    if (slideIdx === 1)  buildChart('fig2a', 'figs-fig2a-chart');
+    if (slideIdx === 2)  buildChart('fig2b', 'figs-fig2b-chart');
+    if (slideIdx === 3)  buildFig3Chart('figs-fig3-chart');
+    if (slideIdx === 4)  buildFig4aChart('figs-fig4a-chart');
+    if (slideIdx === 5)  buildFig4bChart('figs-fig4b-chart');
+    if (slideIdx === 6)  buildFig5aChart('figs-fig5a-chart');
+    if (slideIdx === 7)  buildFig5bChart('figs-fig5b-chart');
+    if (slideIdx === 8)  buildFig6Chart('figs-fig6-chart');
     if (slideIdx === 9)  buildFig7Chart('figs-fig7-chart');
     if (slideIdx === 10) buildFig8Chart('figs-fig8-chart');
+    if (slideIdx === 11) buildFig9aChart('figs-fig9a-chart');
+    if (slideIdx === 12) buildFig9bChart('figs-fig9b-chart');
   }));
 }
 
