@@ -280,7 +280,7 @@
   /* Sector classification table (Table 3) */
   .data-table--sectors { font-size: .9rem; }
   .data-table--sectors th,
-  .data-table--sectors td { white-space: normal; }
+  .data-table--sectors td { white-space: normal; text-align: center; }
   .data-table--sectors th:first-child,
   .data-table--sectors td:first-child { text-align: center; width: 4rem; white-space: nowrap; }
   .data-table--sectors th:nth-child(2),
@@ -564,6 +564,10 @@
         <span class="figs-nav-label">Fig. 7</span>
         <div class="figs-dot"></div>
       </div>
+      <div class="figs-nav-item" data-slide-target="10">
+        <span class="figs-nav-label">Fig. 8</span>
+        <div class="figs-dot"></div>
+      </div>
     </div>
 
     <!-- Full-page scroll container -->
@@ -706,6 +710,20 @@
           <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
           <div class="figs-note">
             <strong>Note:</strong> Implied effective tax rate (ETR) for the most profitable U.S. corporations by tier. Implied ETR is calculated as aggregate tax expense divided by aggregate profit before tax within each tier, thus weighting larger, more profitable corporations more heavily than a simple average. This measure reveals the actual tax burden faced by the biggest profit-generators. The three tiers shown are: Top 10 corporations (orange), Next 90 corporations (blue), and Next 400 corporations (green). Horizontal reference lines mark the statutory federal CIT rates of 35% (pre-TCJA) and 21% (post-TCJA).
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10 — Figure 8: Magnificent 7 ETRs 5-year trailing avg -->
+      <div class="figs-slide" id="figs-slide-10">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 8: Magnificent 7 ETRs (5-year trailing averages), 2003&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig8-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> 5-year trailing average ETRs for major tech corporations. Pre-TCJA: 25&ndash;35%. Post-TCJA: 10&ndash;20% (2024). Nvidia ~0%, Tesla ~5%, Netflix ~10%, Amazon/Meta 12&ndash;15%, Apple/Microsoft ~15%, Oracle ~20%. TCJA benefited the largest corporations disproportionately. Statutory rate: 35% &rarr; 21%.
           </div>
         </div>
       </div>
@@ -943,7 +961,7 @@
       <div class="author-card">
         <img src="https://raw.githubusercontent.com/linusze/winnertakesall/main/pictures/aidan.png"
              alt="Aidan Regan" class="author-photo">
-        <div class="author-name">Aidan Regan</div>
+        <div class="author-name">Aidan<br>Regan</div>
         <div class="author-email">aidan.regan@ucd.ie</div>
         <div class="author-bio">Professor of Political Economy, Lead investigator in the Democracy Challenged project.</div>
       </div>
@@ -967,7 +985,7 @@
       <div class="author-card">
         <img src="https://raw.githubusercontent.com/linusze/winnertakesall/main/pictures/linus.png"
              alt="Linus Zechlin" class="author-photo">
-        <div class="author-name">Linus Zechlin</div>
+        <div class="author-name">Linus<br>Zechlin</div>
         <div class="author-email">linus.zechlin@ucdconnect.ie</div>
         <div class="author-bio">Democracy Challenged PhD candidate. Background: Economics &amp; IPE.</div>
       </div>
@@ -1095,6 +1113,24 @@ function processFig5bCSV(csvText) {
   };
 }
 
+// ── Process Magnificent 7 ETR CSV (fig8_data.csv) — values already in % ──
+function processFig8CSV(csvText) {
+  const rows = parseCSV(csvText);
+  const valid = rows.filter(r => r.year && +r.year >= 2003 && +r.year <= 2024);
+  _cache['fig8'] = {
+    years:     valid.map(r => +r.year),
+    alphabet:  valid.map(r => +r.etr5_alphabet),
+    amazon:    valid.map(r => +r.etr5_amazon),
+    apple:     valid.map(r => +r.etr5_apple),
+    meta:      valid.map(r => +r.etr5_meta),
+    microsoft: valid.map(r => +r.etr5_microsoft),
+    netflix:   valid.map(r => +r.etr5_netflix),
+    nvidia:    valid.map(r => +r.etr5_nvidia),
+    oracle:    valid.map(r => +r.etr5_oracle),
+    tesla:     valid.map(r => +r.etr5_tesla)
+  };
+}
+
 // ── Process implied ETR by tier CSV (fig7_data.csv) — values are decimals, stored as % ──
 function processFig7CSV(csvText) {
   const rows = parseCSV(csvText);
@@ -1131,7 +1167,8 @@ const DATA_URLS = {
   fig5:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5_data.csv',
   fig5b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5b_data.csv',
   fig6:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig6_data.csv',
-  fig7:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig7_data.csv?v=2'
+  fig7:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig7_data.csv?v=2',
+  fig8:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig8_data.csv'
 };
 
 Promise.all([
@@ -1142,8 +1179,9 @@ Promise.all([
   fetch(DATA_URLS.fig5).then(r   => { if (!r.ok)  throw new Error('fig5 fetch failed');   return r.text();  }),
   fetch(DATA_URLS.fig5b).then(r  => { if (!r.ok)  throw new Error('fig5b fetch failed');  return r.text();  }),
   fetch(DATA_URLS.fig6).then(r   => { if (!r.ok)  throw new Error('fig6 fetch failed');   return r.text();  }),
-  fetch(DATA_URLS.fig7).then(r   => { if (!r.ok)  throw new Error('fig7 fetch failed');   return r.text();  })
-]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6, csv7]) => {
+  fetch(DATA_URLS.fig7).then(r   => { if (!r.ok)  throw new Error('fig7 fetch failed');   return r.text();  }),
+  fetch(DATA_URLS.fig8).then(r   => { if (!r.ok)  throw new Error('fig8 fetch failed');   return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6, csv7, csv8]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
@@ -1152,6 +1190,7 @@ Promise.all([
   processFig5bCSV(csv5b);
   processFig6CSV(csv6);
   processFig7CSV(csv7);
+  processFig8CSV(csv8);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1603,6 +1642,124 @@ function buildFig5bChart(targetId) {
   Plotly.newPlot(targetId, [trace], layout, config);
 }
 
+// ── Build Figure 8: Magnificent 7 ETRs 5-year trailing averages ──
+function buildFig8Chart(targetId) {
+  const d = getData('fig8');
+  if (!d) return;
+
+  const series = [
+    { key: 'alphabet',  name: 'Alphabet (Google)', color: '#0072B2', dash: 'solid',   symbol: 'circle' },
+    { key: 'amazon',    name: 'Amazon',            color: '#E69F00', dash: 'solid',   symbol: 'square' },
+    { key: 'apple',     name: 'Apple',             color: '#56B4E9', dash: 'dash',    symbol: 'triangle-up' },
+    { key: 'meta',      name: 'Meta (Facebook)',   color: '#009E73', dash: 'dash',    symbol: 'diamond' },
+    { key: 'microsoft', name: 'Microsoft',         color: '#F0E442', dash: 'dashdot', symbol: 'circle' },
+    { key: 'netflix',   name: 'Netflix',           color: '#D55E00', dash: 'dashdot', symbol: 'square' },
+    { key: 'nvidia',    name: 'Nvidia',            color: '#CC79A7', dash: 'solid',   symbol: 'triangle-up' },
+    { key: 'oracle',    name: 'Oracle',            color: '#999999', dash: 'dash',    symbol: 'circle-open' },
+    { key: 'tesla',     name: 'Tesla',             color: '#000000', dash: 'dot',     symbol: 'square-open' }
+  ];
+
+  const traces = series.map(s => ({
+    x: d.years,
+    y: d[s.key],
+    name: s.name,
+    type: 'scatter',
+    mode: 'lines+markers',
+    line:   { color: s.color, width: 1.5, dash: s.dash },
+    marker: { color: s.color, size: 5, symbol: s.symbol },
+    hovertemplate: '<b>' + s.name + '</b><br>%{x}<br>%{y:.1f}%<extra></extra>'
+  }));
+
+  const layout = {
+    xaxis: {
+      tick0: 2003, dtick: 3,
+      tickfont: { size: 10 },
+      showgrid: true,
+      gridcolor: '#f0f0f0',
+      zeroline: false
+    },
+    yaxis: {
+      title: { text: '5-Year Trailing Average ETR (%)', font: { size: 12 } },
+      ticksuffix: '%',
+      dtick: 5,
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      zeroline: true,
+      zerolinecolor: '#ccc',
+      zerolinewidth: 1
+    },
+    shapes: [
+      {
+        type: 'line', x0: 2003, x1: 2024,
+        y0: 35, y1: 35,
+        xref: 'x', yref: 'y',
+        line: { color: 'rgba(150,150,150,0.6)', width: 1, dash: 'dash' }
+      },
+      {
+        type: 'line', x0: 2003, x1: 2024,
+        y0: 21, y1: 21,
+        xref: 'x', yref: 'y',
+        line: { color: 'rgba(150,150,150,0.6)', width: 1, dash: 'dash' }
+      },
+      {
+        type: 'line', x0: 2018, x1: 2018,
+        y0: 0, y1: 1,
+        xref: 'x', yref: 'paper',
+        line: { color: 'firebrick', width: 1.2, dash: 'dot' }
+      }
+    ],
+    annotations: [
+      {
+        x: 2003.3, y: 35,
+        xref: 'x', yref: 'y',
+        text: 'Statutory 35%',
+        showarrow: false,
+        xanchor: 'left',
+        yanchor: 'bottom',
+        font: { size: 9.5, color: 'rgba(100,100,100,0.85)' }
+      },
+      {
+        x: 2003.3, y: 21,
+        xref: 'x', yref: 'y',
+        text: 'Statutory 21%',
+        showarrow: false,
+        xanchor: 'left',
+        yanchor: 'bottom',
+        font: { size: 9.5, color: 'rgba(100,100,100,0.85)' }
+      },
+      {
+        x: 2018.3, y: 0.97,
+        xref: 'x', yref: 'paper',
+        text: 'TCJA<br>(2018)',
+        showarrow: false,
+        xanchor: 'left',
+        font: { size: 10, color: 'firebrick' }
+      }
+    ],
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.22,
+      xanchor: 'left',
+      font: { size: 10 },
+      tracegroupgap: 0
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 65, r: 20, t: 70, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 11 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, traces, layout, config);
+}
+
 // ── Build Figure 7: Implied ETR by profitability tier (3 lines + TCJA + statutory lines) ──
 function buildFig7Chart(targetId) {
   const d = getData('fig7');
@@ -1832,7 +1989,7 @@ const _figsRendered = {};
 let _currentSlide  = 0;
 let _isTransitioning = false;
 let _figsSliderInit  = false;
-const SLIDE_COUNT = 10;
+const SLIDE_COUNT = 11;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
@@ -1848,7 +2005,8 @@ function buildFigsChart(slideIdx) {
     if (slideIdx === 6) buildFig5aChart('figs-fig5a-chart');
     if (slideIdx === 7) buildFig5bChart('figs-fig5b-chart');
     if (slideIdx === 8) buildFig6Chart('figs-fig6-chart');
-    if (slideIdx === 9) buildFig7Chart('figs-fig7-chart');
+    if (slideIdx === 9)  buildFig7Chart('figs-fig7-chart');
+    if (slideIdx === 10) buildFig8Chart('figs-fig8-chart');
   }));
 }
 
