@@ -560,6 +560,10 @@
         <span class="figs-nav-label">Fig. 6</span>
         <div class="figs-dot"></div>
       </div>
+      <div class="figs-nav-item" data-slide-target="9">
+        <span class="figs-nav-label">Fig. 7</span>
+        <div class="figs-dot"></div>
+      </div>
     </div>
 
     <!-- Full-page scroll container -->
@@ -688,6 +692,20 @@
           <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
           <div class="figs-note">
             <strong>Note:</strong> Implied effective tax rate (ETR) for Knowledge and Traditional sectors. Implied ETR is calculated as aggregate tax expense divided by aggregate profit before tax within each sector, thus weighting larger, more profitable corporations more heavily. Knowledge sector includes technology, pharmaceuticals, and other knowledge-intensive industries. Traditional sector includes commodities, retail, manufacturing, and services. Dashed horizontal lines mark statutory federal corporate income tax (CIT) rates of 35% (pre-TCJA) and 21% (post-TCJA).
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9 — Figure 7: Implied ETR by Profitability Tier -->
+      <div class="figs-slide" id="figs-slide-9">
+        <div class="figs-slide-inner">
+          <div class="figs-fig-title">Figure 7: Implied Effective Tax Rates by Profitability Tier, 2003&ndash;2024</div>
+          <div class="figs-chart-wrap">
+            <div id="figs-fig7-chart" class="plotly-chart"></div>
+          </div>
+          <div class="figs-source">Source: Orbis Historical. Authors&rsquo; calculations.</div>
+          <div class="figs-note">
+            <strong>Note:</strong> Implied effective tax rate (ETR) for the most profitable U.S. corporations by tier. Implied ETR is calculated as aggregate tax expense divided by aggregate profit before tax within each tier, thus weighting larger, more profitable corporations more heavily than a simple average. This measure reveals the actual tax burden faced by the biggest profit-generators. The three tiers shown are: Top 10 corporations (orange), Next 90 corporations (blue), and Next 400 corporations (green). Horizontal reference lines mark the statutory federal CIT rates of 35% (pre-TCJA) and 21% (post-TCJA).
           </div>
         </div>
       </div>
@@ -1077,6 +1095,18 @@ function processFig5bCSV(csvText) {
   };
 }
 
+// ── Process implied ETR by tier CSV (fig7_data.csv) — values are decimals, stored as % ──
+function processFig7CSV(csvText) {
+  const rows = parseCSV(csvText);
+  const valid = rows.filter(r => r.year && +r.year >= 2003 && +r.year <= 2024);
+  _cache['fig7'] = {
+    years:   valid.map(r => +r.year),
+    top10:   valid.map(r => +r.impliedETR_top10   * 100),
+    next90:  valid.map(r => +r.impliedETR_next90  * 100),
+    next400: valid.map(r => +r.impliedETR_next400 * 100)
+  };
+}
+
 // ── Process implied ETR CSV (fig6_data.csv) — values are decimals, stored as % ──
 function processFig6CSV(csvText) {
   const rows = parseCSV(csvText);
@@ -1100,7 +1130,8 @@ const DATA_URLS = {
   fig3_5: 'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig3_5_data.csv',
   fig5:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5_data.csv',
   fig5b:  'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig5b_data.csv',
-  fig6:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig6_data.csv'
+  fig6:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig6_data.csv',
+  fig7:   'https://raw.githubusercontent.com/linusze/winnertakesall/main/data/fig7_data.csv'
 };
 
 Promise.all([
@@ -1110,8 +1141,9 @@ Promise.all([
   fetch(DATA_URLS.fig3_5).then(r => { if (!r.ok)  throw new Error('fig3_5 fetch failed'); return r.text();  }),
   fetch(DATA_URLS.fig5).then(r   => { if (!r.ok)  throw new Error('fig5 fetch failed');   return r.text();  }),
   fetch(DATA_URLS.fig5b).then(r  => { if (!r.ok)  throw new Error('fig5b fetch failed');  return r.text();  }),
-  fetch(DATA_URLS.fig6).then(r   => { if (!r.ok)  throw new Error('fig6 fetch failed');   return r.text();  })
-]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6]) => {
+  fetch(DATA_URLS.fig6).then(r   => { if (!r.ok)  throw new Error('fig6 fetch failed');   return r.text();  }),
+  fetch(DATA_URLS.fig7).then(r   => { if (!r.ok)  throw new Error('fig7 fetch failed');   return r.text();  })
+]).then(([csv1a, csv2a, csv2b, csv35, csv5, csv5b, csv6, csv7]) => {
   processTop001CSV(csv1a);
   processCSV('fig2a', csv2a);
   processCSV('fig2b', csv2b);
@@ -1119,6 +1151,7 @@ Promise.all([
   processFig5CSV(csv5);
   processFig5bCSV(csv5b);
   processFig6CSV(csv6);
+  processFig7CSV(csv7);
   document.getElementById('loading-overlay').classList.add('hidden');
 }).catch(() => {
   const ov = document.getElementById('loading-overlay');
@@ -1570,6 +1603,113 @@ function buildFig5bChart(targetId) {
   Plotly.newPlot(targetId, [trace], layout, config);
 }
 
+// ── Build Figure 7: Implied ETR by profitability tier (3 lines + TCJA + statutory lines) ──
+function buildFig7Chart(targetId) {
+  const d = getData('fig7');
+  if (!d) return;
+
+  const series = [
+    { key: 'top10',   name: 'Top 10 corporations',   color: '#D55E00', dash: 'solid' },
+    { key: 'next90',  name: 'Next 90 corporations',  color: '#0072B2', dash: 'dash' },
+    { key: 'next400', name: 'Next 400 corporations', color: '#009E73', dash: 'dashdot' }
+  ];
+
+  const traces = series.map(s => ({
+    x: d.years,
+    y: d[s.key],
+    name: s.name,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: s.color, width: 2, dash: s.dash },
+    hovertemplate: '<b>' + s.name + '</b><br>%{x}<br>%{y:.1f}%<extra></extra>'
+  }));
+
+  const layout = {
+    xaxis: {
+      tick0: 2003, dtick: 2,
+      tickfont: { size: 10 },
+      showgrid: false, zeroline: false
+    },
+    yaxis: {
+      title: { text: 'Effective tax rate (%)', font: { size: 12 } },
+      ticksuffix: '%',
+      tickfont: { size: 10 },
+      gridcolor: '#e5e5e5',
+      zeroline: true,
+      zerolinecolor: '#ccc',
+      zerolinewidth: 1
+    },
+    shapes: [
+      {
+        type: 'line', x0: 2003, x1: 2024,
+        y0: 35, y1: 35,
+        xref: 'x', yref: 'y',
+        line: { color: 'rgba(120,120,120,0.55)', width: 1, dash: 'dash' }
+      },
+      {
+        type: 'line', x0: 2003, x1: 2024,
+        y0: 21, y1: 21,
+        xref: 'x', yref: 'y',
+        line: { color: 'rgba(120,120,120,0.55)', width: 1, dash: 'dash' }
+      },
+      {
+        type: 'line', x0: 2018, x1: 2018,
+        y0: 0, y1: 1,
+        xref: 'x', yref: 'paper',
+        line: { color: 'rgba(80,80,80,0.65)', width: 1.2, dash: 'solid' }
+      }
+    ],
+    annotations: [
+      {
+        x: 2003.3, y: 35,
+        xref: 'x', yref: 'y',
+        text: 'Statutory 35%',
+        showarrow: false,
+        xanchor: 'left',
+        yanchor: 'bottom',
+        font: { size: 10, color: 'rgba(100,100,100,0.85)' }
+      },
+      {
+        x: 2003.3, y: 21,
+        xref: 'x', yref: 'y',
+        text: 'Statutory 21%',
+        showarrow: false,
+        xanchor: 'left',
+        yanchor: 'bottom',
+        font: { size: 10, color: 'rgba(100,100,100,0.85)' }
+      },
+      {
+        x: 2018.25, y: 0.97,
+        xref: 'x', yref: 'paper',
+        text: 'TCJA<br>(2018)',
+        showarrow: false,
+        xanchor: 'left',
+        font: { size: 11, color: '#444' }
+      }
+    ],
+    legend: {
+      orientation: 'h',
+      x: 0, y: 1.18,
+      xanchor: 'left',
+      font: { size: 11 }
+    },
+    hovermode: 'x unified',
+    plot_bgcolor: '#fff',
+    paper_bgcolor: '#fff',
+    margin: { l: 65, r: 20, t: 50, b: 50 },
+    hoverlabel: { bgcolor: '#fff', bordercolor: '#ccc', font: { size: 12 } }
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['zoom2d','pan2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d','lasso2d','select2d'],
+    displaylogo: false
+  };
+
+  Plotly.newPlot(targetId, traces, layout, config);
+}
+
 // ── Build Figure 6: Implied ETR Knowledge vs Traditional (2 lines + TCJA + statutory lines) ──
 function buildFig6Chart(targetId) {
   const d = getData('fig6');
@@ -1692,7 +1832,7 @@ const _figsRendered = {};
 let _currentSlide  = 0;
 let _isTransitioning = false;
 let _figsSliderInit  = false;
-const SLIDE_COUNT = 9;
+const SLIDE_COUNT = 10;
 
 function buildFigsChart(slideIdx) {
   if (_figsRendered[slideIdx]) return;
@@ -1708,6 +1848,7 @@ function buildFigsChart(slideIdx) {
     if (slideIdx === 6) buildFig5aChart('figs-fig5a-chart');
     if (slideIdx === 7) buildFig5bChart('figs-fig5b-chart');
     if (slideIdx === 8) buildFig6Chart('figs-fig6-chart');
+    if (slideIdx === 9) buildFig7Chart('figs-fig7-chart');
   }));
 }
 
